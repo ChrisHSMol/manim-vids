@@ -1,8 +1,9 @@
 from manim import *
 from helpers import *
-# from manim_slides import Slide
 
 slides = False
+if slides:
+    from manim_slides import Slide
 base_col = GREEN
 rent_col = GREEN_B
 graph_params = {
@@ -66,12 +67,12 @@ class Annuitetsopsparing(Slide if slides else MovingCameraScene):
             h,
             num_decimal_places=2,
             z_index=rect.z_index + 1,
-            # color=base_col
-            # ).scale(0.45).next_to(b_rect, UP, buff=0.1)
-            # ).scale(0.45).next_to(b_rect, DOWN).shift(0.625*UP)
-            color=DARKER_GRAY,
-            stroke_color=DARKER_GRAY
-        ).scale(0.45).next_to(rect, UP).shift(0.45 * DOWN)
+            color=base_col
+            ).scale(0.45).next_to(rect, UP, buff=0.1)
+        # ).scale(0.45).next_to(rect, DOWN).shift(0.625*UP)
+        #     color=DARKER_GRAY,
+        #     stroke_color=DARKER_GRAY
+        # ).scale(0.45).next_to(rect, UP).shift(0.45 * DOWN)
 
     def one_time_payment(self):
         yaxis_lines = self.add_axis_lines(plane, "y")
@@ -145,7 +146,7 @@ class Annuitetsopsparing(Slide if slides else MovingCameraScene):
                 ).move_to(b_rect.get_top()),
                 run_time=2
             )
-            prev_rect = b_rects[-1].copy()
+            prev_rect = b_rects[-1].copy().set_z_index(-1)
             rente = self.get_rectangle(
                 i,
                 b * ((1+r1)**(i-1) - (1+r1)**(i-2)),
@@ -156,6 +157,7 @@ class Annuitetsopsparing(Slide if slides else MovingCameraScene):
                     plane.c2p(i, h/(2*(1+r1)))
                 )
             )
+            prev_rect.set_z_index(0)
             self.slide_pause(0.5)
             self.play(
                 TransformFromCopy(
