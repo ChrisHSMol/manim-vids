@@ -15,11 +15,6 @@ plane = Axes(
     y_range=graph_params["ylims"],
     x_length=graph_params["width"],
     y_length=graph_params["width"] / 16 * 9,
-    # background_line_style={
-    #     "stroke_color": TEAL,
-    #     "stroke_width": 2,
-    #     "stroke_opacity": 0.3
-    # },
     axis_config={"include_numbers": True}
 )
 b = 500
