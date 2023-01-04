@@ -5,7 +5,8 @@ slides = False
 if slides:
     from manim_slides import Slide
 base_col = GREEN
-rent_col = GREEN_B
+rent_col = GREEN_A
+term_col = RED
 graph_params = {
     "xlims": (0, 13.5, 1),
     "ylims": (0, 7500, 1000),
@@ -75,6 +76,7 @@ class Annuitetsopsparing(Slide if slides else MovingCameraScene):
         # ).scale(0.45).next_to(rect, UP).shift(0.45 * DOWN)
 
     def one_time_payment(self):
+        speed_up_index = 4
         yaxis_lines = self.add_axis_lines(plane, "y")
         self.play(
             DrawBorderThenFill(
@@ -144,9 +146,10 @@ class Annuitetsopsparing(Slide if slides else MovingCameraScene):
                 self.camera.frame.animate.set(
                     width=4
                 ).move_to(b_rect.get_top()),
-                run_time=2
+                run_time=2 if i < speed_up_index else 1
             )
-            prev_rect = b_rects[-1].copy().set_z_index(-1)
+            prev_rect = b_rects[-1].copy()#.set_z_index(-1)
+            b_rect.set_z_index(1)
             rente = self.get_rectangle(
                 i,
                 b * ((1+r1)**(i-1) - (1+r1)**(i-2)),
@@ -155,10 +158,12 @@ class Annuitetsopsparing(Slide if slides else MovingCameraScene):
             self.play(
                 prev_rect.animate.move_to(
                     plane.c2p(i, h/(2*(1+r1)))
-                )
+                ),
+                run_time=1 if i < speed_up_index else 0.5
             )
-            prev_rect.set_z_index(0)
-            self.slide_pause(0.5)
+            # prev_rect.set_z_index(0)
+            b_rect.set_z_index(0)
+            self.slide_pause(0.5 if i < speed_up_index else 0.25)
             self.play(
                 TransformFromCopy(
                     prev_rect,
@@ -166,28 +171,30 @@ class Annuitetsopsparing(Slide if slides else MovingCameraScene):
                 ),
                 Write(
                     r1_text.next_to(b_rect, UP, buff=0.1)
-                )
+                ),
+                run_time=1 if i < speed_up_index else 0.5
             )
-            self.slide_pause(0.5)
+            self.slide_pause(0.5 if i < speed_up_index else 0.25)
             self.play(
                 Transform(
                     VGroup(prev_rect, rente),
                     b_rect
                 ),
                 # FadeOut(r1_text)
-                r1_text.animate.shift(0.5*DOWN)
+                r1_text.animate.shift(0.5*DOWN),
+                run_time=1 if i < speed_up_index else 0.5
             )
             self.remove(r1_text)
-            self.slide_pause(0.5)
+            self.slide_pause(0.5 if i < speed_up_index else 0.25)
             self.play(
                 Write(
                     rect_text
                 ),
-                run_time=0.5
+                run_time=0.5 if i < speed_up_index else 0.25
             )
             b_rects += b_rect
             rect_texts += rect_text
-            self.slide_pause(0.5)
+            self.slide_pause(0.5 if i < speed_up_index else 0.25)
             # break
 
         self.play(
@@ -196,7 +203,29 @@ class Annuitetsopsparing(Slide if slides else MovingCameraScene):
             ),
             run_time=2
         )
-        self.slide_pause(5)
+        self.slide_pause(3)
+
+        forklaring1 = VGroup(
+            Tex("Begyndelsesværdi, ", "b", ": ", f"{b:.2f}"),
+            Tex("Rente, ", "r", ": ", f"{r1*100:.0f}\%", " = ", f"{r1:.2f}"),
+            MathTex("y = ", f"{b:.2f}", "\\cdot", "(1+", f"{r1:.2f}", ")^n")
+        ).arrange(DOWN, aligned_edge=LEFT).move_to(plane.c2p(4, 6500))
+        forklaring1[0][1].set_color(base_col)
+        forklaring1[0][-1].set_color(base_col)
+        forklaring1[1][1].set_color(rent_col)
+        forklaring1[1][3].set_color(rent_col)
+        forklaring1[1][-1].set_color(rent_col)
+        forklaring1[2][1].set_color(base_col)
+        forklaring1[2][4].set_color(rent_col)
+        forklaring1[2][-1][-1].set_color(term_col)
+        self.play(
+            Write(
+                forklaring1
+            ),
+            run_time=1
+        )
+        self.slide_pause(3)
+
 
 
 # if i:
