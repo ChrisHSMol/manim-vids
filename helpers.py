@@ -18,9 +18,12 @@ def _prep_title(title, close=False):
     return title_ul, title_ul_box, ul_group
 
 
-def play_title(self, title):
+def play_title(self, title, cols=None):
     if isinstance(title, str):
-        title = Tex(title)
+        title = Tex(*[t+" " for t in title.split()])
+    if cols is not None and isinstance(cols, dict):
+        for k, v in cols.items():
+            title[int(k)].set_color(v)
     title_ul, title_ul_box, ul_group = _prep_title(title)
     self.play(Write(title), run_time=0.5)
     self.wait(2)
@@ -121,3 +124,15 @@ def create_table(data, orientation="vertical", numcol1=BLUE, numcol2=None, dec=0
         data
     )
     return table
+
+
+slides = False
+def slides_pause(self, t=1.0, slides_bool=slides):
+    if slides_bool:
+        indicator = Dot(fill_opacity=0.5, fill_color=GREEN).scale(0.5).to_edge(DR, buff=0.1)
+        self.play(FadeIn(indicator), run_time=0.25)
+        xs_pause(self)
+        self.pause()
+        self.play(FadeOut(indicator), run_time=0.25)
+    else:
+        self.wait(t)
