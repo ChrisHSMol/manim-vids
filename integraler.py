@@ -34,12 +34,12 @@ class Sumregel(Slide if slides else MovingCameraScene):
         return slides_pause(self, t=t, slides_bool=slides_bool)
 
     def get_line_to_graph(self, axes, graph, x, match_col=True):
-        line = Line(
+        line = always_redraw(lambda: Line(
             start=axes.c2p(x, 0),
             end=axes.c2p(x, graph.underlying_function(x)),
             color=graph.get_color() if match_col else WHITE,
             stroke_width=3.0
-        )
+        ))
         return line
 
     def get_lines_to_graph(self, axes, graph, xrange=(0.0, 5.0, 1.0), match_col=True):
@@ -86,19 +86,21 @@ class Sumregel(Slide if slides else MovingCameraScene):
         )
         self.slide_pause(0.5)
 
-        a = ValueTracker(-0.25)
-        b = ValueTracker(2.0)
-        c = ValueTracker(0.25)
+        af = ValueTracker(0.0)
+        bf = ValueTracker(1.0)
+        ag = ValueTracker(-0.25)
+        bg = ValueTracker(2.0)
+        cg = ValueTracker(0.25)
 
         graph1 = always_redraw(lambda: plane1.plot(
-            lambda x: 1,
+            lambda x: af.get_value() * x + bf.get_value(),
             color=f_col,
             x_range=xlims[:2],
             stroke_width=2.5
         ))
         graph1_text = MathTex("f(x)", color=f_col).next_to(graph1, UP)
         graph2 = always_redraw(lambda: plane2.plot(
-            lambda x: a.get_value() * x**2 + b.get_value() * x + c.get_value(),
+            lambda x: ag.get_value() * x**2 + bg.get_value() * x + cg.get_value(),
             color=g_col,
             x_range=xlims[:2],
             stroke_width=2.5
@@ -237,20 +239,49 @@ class Sumregel(Slide if slides else MovingCameraScene):
         # )
         # self.slide_pause(0.5)
 
+        x = 1
         for line1, line2 in zip(graph1_lines[1:].copy(), graph2_lines[1:].copy()):
+        # for line1, line2 in zip(graph1_lines[1:], graph2_lines[1:]):
+        #     line1c = always_redraw(lambda: line1.copy().move_to(plane_sum.c2p(
+        #         x,
+        #         0.5 * graph1.underlying_function(x)
+        #     )))
+        #     line2c = always_redraw(lambda: line2.copy().move_to(plane_sum.c2p(
+        #         x,
+        #         plane_sum.p2c(line1c.get_top())[1] + 0.5 * graph2.underlying_function(x)
+        #     )))
+        #     self.play(
+        #         TransformFromCopy(
+        #             VGroup(line1, line2),
+        #             VGroup(line1c, line2c)
+        #         )
+        #     )
             self.play(
-                LaggedStart(
-                    line1.animate.move_to(plane_sum.c2p(
-                        plane1.p2c(line1.get_top())[0],
-                        0.5 * graph1.underlying_function(line1.get_top()[0])
-                    )),
-                    line2.animate.move_to(plane_sum.c2p(
-                        plane2.p2c(line2.get_top())[0],
-                        0.5 * graph2.underlying_function(line2.get_top()[0])
-                    )),
-                    lag_ratio=0.25
-                ),
+                line1.animate.move_to(plane_sum.c2p(
+                    x,
+                    0.5 * graph1.underlying_function(x)
+                )),
                 run_time=1
             )
+            self.play(
+                line2.animate.move_to(plane_sum.c2p(
+                    x,
+                    plane_sum.p2c(line1.get_top())[1] + 0.5 * graph2.underlying_function(x)
+                )),
+                run_time=1
+            )
+            x += 1
+
+        self.play(
+            Create(graph_sum),
+            run_time=2
+        )
+
+        self.play(
+            bf.animate.set_value(2)
+        )
+        self.play(
+            cg.animate.set_value(0.5)
+        )
 
 
