@@ -49,7 +49,7 @@ class Sumregel(Slide if slides else MovingCameraScene):
                 graph,
                 x,
                 match_col
-            ) for x in range(*xrange)
+            ) for x in np.arange(*xrange)
         ])
         return lines
 
@@ -75,6 +75,8 @@ class Sumregel(Slide if slides else MovingCameraScene):
 
         plane1 = plane.copy().to_edge(UL)
         plane2 = plane.copy().to_edge(DL)
+        plane_sum = plane.copy().to_edge(RIGHT)
+        # plane_sum.set_y_range((ylims[0]-1, ylims[1]+3, 1))
         self.play(
             DrawBorderThenFill(plane1),
             run_time=0.5
@@ -98,14 +100,18 @@ class Sumregel(Slide if slides else MovingCameraScene):
             x_range=xlims[:2],
             stroke_width=2.5
         ))
-        graph1_text = MathTex("f(x)", color=f_col).next_to(graph1, UP)
+        graph1_text = always_redraw(lambda:
+            MathTex("f(x)", color=f_col).next_to(graph1, UP)
+        )
         graph2 = always_redraw(lambda: plane2.plot(
             lambda x: ag.get_value() * x**2 + bg.get_value() * x + cg.get_value(),
             color=g_col,
             x_range=xlims[:2],
             stroke_width=2.5
         ))
-        graph2_text = MathTex("g(x)", color=g_col).next_to(graph2, UP)
+        graph2_text = always_redraw(lambda:
+            MathTex("g(x)", color=g_col).next_to(graph2, UP)
+        )
         self.play(
             Create(graph1),
             Write(graph1_text),
@@ -140,148 +146,178 @@ class Sumregel(Slide if slides else MovingCameraScene):
         # )
         # self.slide_pause(0.5)
 
-        graph1_lines = always_redraw(lambda:
-            self.get_lines_to_graph(plane1, graph1, (0, 9, 1))
-        )
-        graph2_lines = always_redraw(lambda:
-            self.get_lines_to_graph(plane2, graph2, (0, 9, 1))
-        )
+        for ix, xstep in enumerate([1, 0.5, 0.25, 0.1]):
+            speed_up_index = 2
+            rtime = xstep ** 2
+            xrange = (0, 8.1, xstep)
+            graph1_lines = always_redraw(lambda:
+                self.get_lines_to_graph(plane1, graph1, xrange)
+            )
+            graph2_lines = always_redraw(lambda:
+                self.get_lines_to_graph(plane2, graph2, xrange)
+            )
+            graph1_lines_copy = always_redraw(lambda: VGroup(
+                *[
+                    Line(
+                        start=plane_sum.c2p(x, 0),
+                        end=plane_sum.c2p(x, graph1.underlying_function(x)),
+                        color=graph1.get_color(),
+                        stroke_width=3.0
+                    ) for x in np.arange(*xrange)
+                ]
+            ))
+            graph2_lines_copy = always_redraw(lambda: VGroup(
+                *[
+                    Line(
+                        start=plane_sum.c2p(x, graph1.underlying_function(x)),
+                        end=plane_sum.c2p(
+                            x,
+                            graph1.underlying_function(x) + graph2.underlying_function(x)
+                        ),
+                        color=graph2.get_color(),
+                        stroke_width=3.0
+                    ) for x in np.arange(*xrange)
+                ]
+            ))
 
-        self.camera.frame.save_state()
-        self.play(
-            self.camera.frame.animate.set(
-                width=4
-            ).move_to(plane1.c2p(0, 0)),
-            run_time=2
-        )
-        self.slide_pause(0.5)
-        self.play(
-            Create(graph1_lines[0]),
-            run_time=2
-        )
-        self.play(
-            self.camera.frame.animate.move_to(plane2.c2p(0, 0)),
-            run_time=2
-        )
-        self.slide_pause(0.5)
-        self.play(
-            Create(graph2_lines[0]),
-            run_time=2
-        )
-        self.slide_pause(0.5)
-        self.play(Restore(self.camera.frame), run_time=2)
+            if ix == 0:
+                self.camera.frame.save_state()
+                self.play(
+                    self.camera.frame.animate.set(
+                        width=4
+                    ).move_to(plane1.c2p(0, 0)),
+                    run_time=2
+                )
+                self.slide_pause(0.5)
+                self.play(
+                    Create(graph1_lines[0]),
+                    run_time=2
+                )
+                self.play(
+                    self.camera.frame.animate.move_to(plane2.c2p(0, 0)),
+                    run_time=2
+                )
+                self.slide_pause(0.5)
+                self.play(
+                    Create(graph2_lines[0]),
+                    run_time=2
+                )
+                self.slide_pause(0.5)
+                self.play(Restore(self.camera.frame), run_time=2)
+                self.slide_pause(0.5)
 
-        plane_sum = plane.copy().to_edge(RIGHT)
-        # plane_sum.set_y_range((ylims[0]-1, ylims[1]+3, 1))
-        graph_sum = always_redraw(lambda: plane_sum.plot(
-            lambda x: graph1.underlying_function(x) + graph2.underlying_function(x),
-            color=h_col,
-            x_range=xlims[:2],
-            stroke_width=2.5
-        ))
-        self.play(
-            DrawBorderThenFill(plane_sum),
-            run_time=0.5
-        )
-        self.slide_pause(0.5)
+                self.play(
+                    DrawBorderThenFill(plane_sum),
+                    run_time=0.5
+                )
+                self.slide_pause(0.5)
 
-        self.play(
-            graph1_lines[0].copy().animate.move_to(plane_sum.c2p(
-                0,
-                0.5 * graph1.underlying_function(0)
-            )),
-            run_time=1
-        )
-        self.slide_pause(0.5)
-        self.play(
-            graph2_lines[0].copy().animate.move_to(plane_sum.c2p(
-                0,
-                graph1_lines[0].get_top()[1] + 0.5 * graph2.underlying_function(0)
-            )),
-            run_time=1
-        )
-        self.slide_pause(0.5)
+            graph_sum = always_redraw(lambda: plane_sum.plot(
+                lambda x: graph1.underlying_function(x) + graph2.underlying_function(x),
+                color=h_col,
+                x_range=xlims[:2],
+                stroke_width=2.5
+            ))
 
-        for lines in (graph1_lines, graph2_lines):
+            if ix == 0:
+                self.play(
+                    graph1_lines[0].copy().animate.move_to(plane_sum.c2p(
+                        0,
+                        0.5 * graph1.underlying_function(0)
+                    )),
+                    run_time=1
+                )
+                self.slide_pause(0.5)
+                self.play(
+                    graph2_lines[0].copy().animate.move_to(plane_sum.c2p(
+                        0,
+                        graph1_lines[0].get_top()[1] + 0.5 * graph2.underlying_function(0)
+                    )),
+                    run_time=1
+                )
+                self.slide_pause(0.5)
+
+                for lines in (graph1_lines, graph2_lines):
+                    self.play(
+                        LaggedStart(
+                            *[Create(lines[1:])],
+                            lag_ratio=0.25
+                        ),
+                        run_time=2
+                    )
+                    self.slide_pause(0.5)
+
+                self.add(graph1_lines_copy[0], graph2_lines_copy[0])
+                lines = zip(graph1_lines[1:].copy(), graph2_lines[1:].copy())
+                x = xrange[0] + xrange[2]
+            else:
+                for lines in (graph1_lines, graph2_lines):
+                    self.play(
+                        LaggedStart(
+                            *[Create(lines)],
+                            lag_ratio=0.25
+                        ),
+                        run_time=1 if ix < speed_up_index else 0.5
+                    )
+                    self.slide_pause(0.5)
+                lines = zip(graph1_lines.copy(), graph2_lines.copy())
+                x = xrange[0]
+
+            # for line1, line2 in zip(graph1_lines[1:].copy(), graph2_lines[1:].copy()):
+            for line1, line2 in lines:
+                self.play(
+                    line1.animate.move_to(plane_sum.c2p(
+                        x,
+                        0.5 * graph1.underlying_function(x)
+                    )),
+                    # run_time=1 if ix < speed_up_index else 0.1
+                    run_time=rtime
+                )
+                self.play(
+                    line2.animate.move_to(plane_sum.c2p(
+                        x,
+                        plane_sum.p2c(line1.get_top())[1] + 0.5 * graph2.underlying_function(x)
+                    )),
+                    # run_time=1 if ix < speed_up_index else 0.1
+                    run_time=rtime
+                )
+                x += xrange[2]
+
+            self.remove(*[
+                m for m in self.mobjects if m not in [plane1, plane2, plane_sum,
+                                                      graph1, graph2, arrow,
+                                                      graph1_lines, graph2_lines,
+                                                      graph1_text, graph2_text]
+            ])
+            self.add(
+                graph1_lines, graph2_lines,
+                graph1_lines_copy, graph2_lines_copy
+            )
+
             self.play(
-                LaggedStart(
-                    *[Create(lines[1:])],
-                    lag_ratio=0.25
-                ),
+                Create(graph_sum),
                 run_time=2
             )
-            self.slide_pause(0.5)
 
-        # self.play(
-        #     LaggedStart(
-        #         *[
-        #             line.animate.move_to(plane_sum.c2p(
-        #                 plane1.p2c(line.get_top())[0],
-        #                 0.5 * graph1.underlying_function(line.get_top()[0])
-        #             )) for line in graph1_lines[1:].copy()
-        #         ],
-        #         lag_ratio=0.25
-        #     ),
-        #     run_time=2
-        # )
-        # self.slide_pause(0.5)
-        # self.play(
-        #     LaggedStart(
-        #         *[
-        #             line.animate.move_to(plane_sum.c2p(
-        #                 plane2.p2c(line.get_top())[0],
-        #                 bline.get_top() + 0.5 * graph1.underlying_function(line.get_top()[0])
-        #             )) for line, bline in zip(graph2_lines[1:].copy(), graph1_lines[1:].copy())
-        #         ],
-        #         lag_ratio=0.25
-        #     ),
-        #     run_time=2
-        # )
-        # self.slide_pause(0.5)
+            for b in [4, 0, 1]:
+                self.play(
+                    bf.animate.set_value(b),
+                    run_time=1
+                )
+                self.slide_pause(0.5)
+            for a in [0.5, 0]:
+                self.play(
+                    af.animate.set_value(a),
+                    run_time=1
+                )
+                self.slide_pause(0.5)
 
-        x = 1
-        for line1, line2 in zip(graph1_lines[1:].copy(), graph2_lines[1:].copy()):
-        # for line1, line2 in zip(graph1_lines[1:], graph2_lines[1:]):
-        #     line1c = always_redraw(lambda: line1.copy().move_to(plane_sum.c2p(
-        #         x,
-        #         0.5 * graph1.underlying_function(x)
-        #     )))
-        #     line2c = always_redraw(lambda: line2.copy().move_to(plane_sum.c2p(
-        #         x,
-        #         plane_sum.p2c(line1c.get_top())[1] + 0.5 * graph2.underlying_function(x)
-        #     )))
-        #     self.play(
-        #         TransformFromCopy(
-        #             VGroup(line1, line2),
-        #             VGroup(line1c, line2c)
-        #         )
-        #     )
             self.play(
-                line1.animate.move_to(plane_sum.c2p(
-                    x,
-                    0.5 * graph1.underlying_function(x)
-                )),
-                run_time=1
+                FadeOut(VGroup(*[
+                    graph1_lines, graph2_lines,
+                    graph1_lines_copy, graph2_lines_copy,
+                    graph_sum
+                ]))
             )
-            self.play(
-                line2.animate.move_to(plane_sum.c2p(
-                    x,
-                    plane_sum.p2c(line1.get_top())[1] + 0.5 * graph2.underlying_function(x)
-                )),
-                run_time=1
-            )
-            x += 1
-
-        self.play(
-            Create(graph_sum),
-            run_time=2
-        )
-
-        self.play(
-            bf.animate.set_value(2)
-        )
-        self.play(
-            cg.animate.set_value(0.5)
-        )
 
 
