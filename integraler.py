@@ -32,8 +32,8 @@ plane_sum = Axes(
 class Sumregel(Slide if slides else MovingCameraScene):
     def construct(self):
         self.slide_pause(0.5)
-        self.sum_af_to_funktioner()
-        # self.sum_af_to_funktioner_test()
+        # self.sum_af_to_funktioner()
+        self.sum_af_to_funktioner_test()
 
         self.slide_pause(5)
 
@@ -381,6 +381,7 @@ class Sumregel(Slide if slides else MovingCameraScene):
 
 
     def sum_af_to_funktioner_test(self):
+        test = True
         f_col = YELLOW
         g_col = BLUE
         h_col = GREEN
@@ -389,31 +390,35 @@ class Sumregel(Slide if slides else MovingCameraScene):
         intro[0].set_color(f_col)
         intro[2].set_color(g_col)
         intro[4].set_color(h_col)
-        self.play(
-            Write(intro),
-            run_time=2
-        )
-        self.slide_pause(2)
-        self.play(
-            Unwrite(intro),
-            run_time=1
-        )
-        self.slide_pause(0.5)
+        if not test:
+            self.play(
+                Write(intro),
+                run_time=2
+            )
+            self.slide_pause(2)
+            self.play(
+                Unwrite(intro),
+                run_time=1
+            )
+            self.slide_pause(0.5)
 
         plane1 = plane.copy().to_edge(UL)
         plane2 = plane.copy().to_edge(DL)
         plane_sum = plane.copy().to_edge(RIGHT)
         # plane_sum.set_y_range((ylims[0]-1, ylims[1]+3, 1))
-        self.play(
-            DrawBorderThenFill(plane1),
-            run_time=0.5
-        )
-        self.slide_pause(0.5)
-        self.play(
-            DrawBorderThenFill(plane2),
-            run_time=0.5
-        )
-        self.slide_pause(0.5)
+        if test:
+            self.add(plane1, plane2)
+        else:
+            self.play(
+                DrawBorderThenFill(plane1),
+                run_time=0.5
+            )
+            self.slide_pause(0.5)
+            self.play(
+                DrawBorderThenFill(plane2),
+                run_time=0.5
+            )
+            self.slide_pause(0.5)
 
         af = ValueTracker(0.0)
         bf = ValueTracker(1.0)
@@ -439,18 +444,21 @@ class Sumregel(Slide if slides else MovingCameraScene):
         graph2_text = always_redraw(lambda:
             MathTex("g(x)", color=g_col).next_to(graph2, UP)
         )
-        self.play(
-            Create(graph1),
-            Write(graph1_text),
-            run_time=1.5
-        )
-        self.slide_pause(0.5)
-        self.play(
-            Create(graph2),
-            Write(graph2_text),
-            run_time=1.5
-        )
-        self.slide_pause(0.5)
+        if test:
+            self.add(graph1, graph1_text, graph2, graph2_text)
+        else:
+            self.play(
+                Create(graph1),
+                Write(graph1_text),
+                run_time=1.5
+            )
+            self.slide_pause(0.5)
+            self.play(
+                Create(graph2),
+                Write(graph2_text),
+                run_time=1.5
+            )
+            self.slide_pause(0.5)
 
         arrow = Arrow(
             start=1.25*LEFT,
@@ -459,31 +467,28 @@ class Sumregel(Slide if slides else MovingCameraScene):
         func_sum_text = MathTex("f(x)", "+", "g(x)").next_to(arrow, UP, buff=0)
         func_sum_text[0].set_color(f_col)
         func_sum_text[2].set_color(g_col)
-        self.play(
-            DrawBorderThenFill(arrow),
-            run_time=1.5
-        )
-        self.slide_pause(0.5)
+        if test:
+            self.add(arrow)
+        else:
+            self.play(
+                DrawBorderThenFill(arrow),
+                run_time=1.5
+            )
+            self.slide_pause(0.5)
 
-        _xmove = ValueTracker(0)
-        xmove = always_redraw(lambda:
-            DecimalNumber(_xmove.get_value() * (plane1.get_corner(UR) - plane1.get_corner(UL))[0])
-        )
-        # print(plane1.get_corner(UL) + xmove.get_value() * (plane1.get_corner(UR) - plane1.get_corner(UL)))
-        print(xmove.get_value())
+        xmove = ValueTracker(0)
+        # print(xmove.get_value())
+        # print(type(plane1.get_x_length()), type(plane1.get_y_length()), type(xmove.get_value()))
         scanningline_fg = always_redraw(lambda: Line(
-            # start=plane1.get_corner(UL) + xmove.get_value() * (plane1.get_corner(UR) - plane1.get_corner(UL)),
-            # end=plane2.get_corner(DL) + xmove.get_value() * (plane2.get_corner(DR) - plane2.get_corner(DL)),
-            start=plane1.get_corner(UL) + xmove.get_value(),
-            end=plane2.get_corner(DL) + xmove.get_value(),
+            start=plane1.get_corner(UL) + np.array([xmove.get_value() * plane1.get_x_length(), 0, 0]),
+            end=plane2.get_corner(DL) + np.array([xmove.get_value() * plane2.get_x_length(), 0, 0]),
             color=RED,
-            stroke_width=1
+            stroke_width=1,
+            z_index=3
         ))
         scanningline_h = always_redraw(lambda: Line(
-            # start=plane_sum.get_corner(UL) + xmove.get_value() * (plane_sum.get_corner(UR) - plane_sum.get_corner(UL)),
-            # end=plane_sum.get_corner(DL) + xmove.get_value() * (plane_sum.get_corner(DR) - plane_sum.get_corner(DL)),
-            start=plane_sum.get_corner(UL) + xmove.get_value(),
-            end=plane_sum.get_corner(DL) + xmove.get_value(),
+            start=plane_sum.get_corner(UL) + np.array([xmove.get_value() * plane_sum.get_x_length(), 0, 0]),
+            end=plane_sum.get_corner(DL) + np.array([xmove.get_value() * plane_sum.get_x_length(), 0, 0]),
             color=RED,
             stroke_width=1
         ))
@@ -497,16 +502,48 @@ class Sumregel(Slide if slides else MovingCameraScene):
         self.add(graph1_lines, graph2_lines)
         self.add(scanningline_fg)
 
-        print(graph1_lines[0].get_top()[0], scanningline_fg.get_top()[0])
-        self.play(
-            # xmove.animate.set_value(1),
-            _xmove.animate.set_value(1),
-            rate_func=rate_functions.linear,
-            run_time=5
-        )
-        print(graph1_lines[0].get_top()[0], scanningline_fg.get_top()[0])
-        if graph1_lines[0].get_top()[0] == scanningline_fg.get_top()[0]:
-            self.play(Indicate(graph1_lines[0]))
+        # self.play(
+        #     xmove.animate.set_value(1),
+        #     # _xmove.animate.set_value(1),
+        #     rate_func=rate_functions.linear,
+        #     run_time=5
+        # )
+
+        """
+        Prøv at lave en 'for line in graph1_lines: scanningline.move_to(line)
+        """
+        for ix, xwidth in enumerate([1]):#, 0.5]):
+            # for xstep in np.arange(0, 1.01, xwidth/plane1.get_x_length()):
+            for xstep in np.arange(0, 1.01, 1/(len(graph1_lines)+1)):
+            # for xstep in [plane1.c2p(line.get_top())[0] for line in graph1_lines]:
+            # for xstep in np.arange(0, 1.01, 1/(4*len(graph1_lines)+1)):
+            #     xs =
+                print(xstep)
+                self.play(
+                    xmove.animate.set_value(xstep),
+                    rate_func=rate_functions.linear,
+                    run_time=2/xwidth
+                )
+                self.slide_pause(0.5)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        # print(graph1_lines[0].get_top()[0], scanningline_fg.get_top()[0])
+        # if graph1_lines[0].get_top()[0] == scanningline_fg.get_top()[0]:
+        #     self.play(Indicate(graph1_lines[0]))
 
         # # self.play(
         # #     TransformFromCopy(
