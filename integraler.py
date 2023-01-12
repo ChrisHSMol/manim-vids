@@ -32,8 +32,8 @@ plane_sum = Axes(
 class Sumregel(Slide if slides else MovingCameraScene):
     def construct(self):
         self.slide_pause(0.5)
-        # self.sum_af_to_funktioner()
-        self.sum_af_to_funktioner_test()
+        self.sum_af_to_funktioner()
+        # self.sum_af_to_funktioner_test()
 
         self.slide_pause(5)
 
