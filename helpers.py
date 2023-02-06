@@ -14,24 +14,33 @@ def _prep_title(title, close=False):
     ).set_style(fill_opacity=1, stroke_width=0, fill_color=BLACK)
     ul_group = VGroup(title_ul, title_ul_box)
     if close:
-        ul_group.shift(UP*title_ul_box.height)
+        ul_group.shift(UP * title_ul_box.height)
     return title_ul, title_ul_box, ul_group
 
 
-def play_title(self, title, cols=None):
+def play_title(self, title, cols=None, edge=None):
     if isinstance(title, str):
-        title = Tex(*[t+" " for t in title.split()])
+        title = Tex(*[t + " " for t in title.split()])
     if cols is not None and isinstance(cols, dict):
         for k, v in cols.items():
             title[int(k)].set_color(v)
     title_ul, title_ul_box, ul_group = _prep_title(title)
     self.play(Write(title), run_time=0.5)
     self.wait(2)
-    self.play(GrowFromCenter(title_ul), run_time=1)
-    self.add(ul_group)
-    self.play(ul_group.animate.shift(UP*title_ul_box.height))
-    self.play(ShrinkToCenter(title_ul))
-    self.remove(ul_group, title)
+    if edge is not None:
+        self.play(
+            title.animate.to_edge(edge, buff=0.5).set_z_index(10),
+        )
+        self.play(
+            FadeIn(title_ul_box.set_opacity(0.5).to_edge(edge, buff=0.5).set_z_index(9)),
+            run_time=0.1
+        )
+    else:
+        self.play(GrowFromCenter(title_ul), run_time=1)
+        self.add(ul_group)
+        self.play(ul_group.animate.shift(UP * title_ul_box.height))
+        self.play(ShrinkToCenter(title_ul))
+        self.remove(ul_group, title)
     self.wait(2)
 
 
@@ -41,7 +50,7 @@ def play_title_reverse(self, title):
     title_ul, title_ul_box, ul_group = _prep_title(title, close=True)
     self.add(title, ul_group)
     self.play(GrowFromCenter(title_ul))
-    self.play(ul_group.animate.shift(DOWN*title_ul_box.height))
+    self.play(ul_group.animate.shift(DOWN * title_ul_box.height))
     self.remove(ul_group)
     self.play(ShrinkToCenter(title_ul))
     self.wait(1)
@@ -127,6 +136,8 @@ def create_table(data, orientation="vertical", numcol1=BLUE, numcol2=None, dec=0
 
 
 slides = False
+
+
 def slides_pause(self, t=1.0, slides_bool=slides):
     if slides_bool:
         indicator = Dot(fill_opacity=0.5, fill_color=GREEN).scale(0.5).to_edge(DR, buff=0.1)
