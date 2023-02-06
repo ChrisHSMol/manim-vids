@@ -28,6 +28,90 @@ class UgrupperetData(Slide if slides else Scene):
                 ).scale(0.5) for val in data]
         ).arrange(DOWN, aligned_edge=RIGHT, buff=0.1)
 
+    def tegn_boksplot(self, kvartiler, kvartiltekst):
+        q0, q1, q2, q3, q4 = kvartiler
+        plane = NumberLine(
+            x_range=(kvartiler[0]-2, kvartiler[-1]+2, 1),
+            length=12,
+            include_tip=True,
+            include_numbers=True
+        ).shift(2*DOWN)
+        self.play(
+            DrawBorderThenFill(plane)
+        )
+        self.slide_pause(0.5)
+        full_plot = VGroup(plane)
+        for q, t in zip([q0, q4], [kvartiltekst[1], kvartiltekst[9]]):
+            line = Line(
+                start=plane.n2p(q) + 0.5*UP,
+                end=plane.n2p(q) + 1*UP
+            )
+            hnum = t.copy().scale(0.75).move_to(plane.n2p(q)+2*UP)
+            self.play(
+                DrawBorderThenFill(
+                    line
+                ),
+                Circumscribe(t),
+                DrawBorderThenFill(hnum),
+                run_time=2
+            )
+            full_plot += line
+            self.slide_pause(0.5)
+        for q, t in zip([q2, q1, q3], [kvartiltekst[5], kvartiltekst[3], kvartiltekst[7]]):
+            line = Line(
+                start=plane.n2p(q),
+                end=plane.n2p(q) + 1.5*UP
+            )
+            hnum = t.copy().scale(0.75).move_to(plane.n2p(q)+2*UP)
+            self.play(
+                DrawBorderThenFill(
+                    line
+                ),
+                Circumscribe(t),
+                DrawBorderThenFill(hnum),
+                run_time=2
+            )
+            full_plot += line
+            self.slide_pause(0.5)
+
+        box = Rectangle(
+            height=1.5,
+            width=plane.n2p(q3)[0]-plane.n2p(q1)[0],
+            fill_color=BLUE,
+            fill_opacity=1,
+            z_index=-1,
+            stroke_width=0.1
+        ).move_to(0.5*(plane.n2p(q3)+plane.n2p(q1))+0.75*UP)
+        full_plot += box
+        lines = VGroup(
+            *[
+                Line(
+                    start=plane.n2p(ql) + 0.75 * UP,
+                    end=plane.n2p(qh) + 0.75 * UP
+                ) for ql, qh in zip([q0, q3], [q1, q4])
+            ],
+            Line(
+                start=plane.n2p(q1) + 1.5 * UP,
+                end=plane.n2p(q3) + 1.5 * UP
+            )
+        )
+        full_plot += lines
+        self.play(
+            LaggedStart(
+                DrawBorderThenFill(lines),
+                lag_ratio=0.1
+            ),
+            FadeIn(box),
+            run_time=2
+        )
+        self.slide_pause(0.5)
+        self.add(full_plot)
+        self.play(
+            *[FadeOut(m) for m in self.mobjects if m != full_plot]
+        )
+        return full_plot
+
+
     def kvartiler(self):
         data_raw = [8, 4, 16, 8, 9, 6, 16, 19, 7, 6, 4, 8, 11, 8, 9, 6, 9, 10, 11, 8, 14, 4, 6, 7, 10]
         data = self.data_to_DecNum(data_raw).to_edge(LEFT)
@@ -43,8 +127,8 @@ class UgrupperetData(Slide if slides else Scene):
         steps = VGroup(
             Tex("Trin 1: Sortér data"),
             Tex("Trin 2: Find midterste tal"),
-            Tex("Trin 3: Trin 2, men øverste halvdel"),
-            Tex("Trin 4: Trin 2, men nederste halvdel")
+            Tex("Trin 3: Trin 2, men nederste halvdel"),
+            Tex("Trin 4: Trin 2, men øverste halvdel")
         ).scale(0.5).arrange(DOWN, aligned_edge=LEFT).to_edge(UR, buff=1.5)
         self.play(
             Write(steps[0]),
@@ -149,7 +233,7 @@ class UgrupperetData(Slide if slides else Scene):
                     "2}",
                     "=",
                     # f"{np.mean(data_ordered[i-1].get_value(), data_ordered[i].get_value())}"
-                    f"{np.mean(nums):.1f}"
+                    f"{np.mean(nums):.0f}"
                 ).next_to(VGroup(data_ordered[i-1:i+1]), RIGHT).scale(0.5)
                 calculation_q1[0].set_color(YELLOW)
                 calculation_q1[2].set_color(YELLOW)
@@ -174,12 +258,13 @@ class UgrupperetData(Slide if slides else Scene):
                 q1 = DecimalNumber(
                     np.mean(nums),
                     include_sign=False,
-                    num_decimal_places=1,
+                    num_decimal_places=0,
                     color=YELLOW
                 ).scale(0.5).next_to(calculation_q1, RIGHT, buff=-0.15)
+                q1num = int(np.mean(nums))
                 self.add(q1)
                 self.play(
-                    q1.animate.next_to(steps[2], RIGHT, buff=0.5),
+                    q1.animate.next_to(steps[2], RIGHT, buff=0.37),
                     data_ordered[:i-1].animate.set_color(topArrow.get_color()),
                     data_ordered[i+1:index_median].animate.set_color(botArrow.get_color()),
                 )
@@ -217,7 +302,7 @@ class UgrupperetData(Slide if slides else Scene):
                 print("HEJ")
             if topArrow.get_center()[1] < botArrow.get_center()[1]:
                 self.play(
-                    VGroup(data_ordered[it], data_ordered[ib]).animate.set_color(YELLOW),
+                    VGroup(data_ordered[ib], data_ordered[it]).animate.set_color(YELLOW),
                     run_time=2
                 )
                 nums = [data_ordered[ib].get_value(), data_ordered[it].get_value()]
@@ -230,19 +315,19 @@ class UgrupperetData(Slide if slides else Scene):
                     "=",
                     # f"{np.mean(data_ordered[i-1].get_value(), data_ordered[i].get_value())}"
                     f"{np.mean(nums):.1f}"
-                ).next_to(VGroup(data_ordered[it:ib]), RIGHT).scale(0.5)
+                ).next_to(VGroup(data_ordered[ib:it+1]), RIGHT, buff=0).scale(0.5)
                 calculation_q3[0].set_color(YELLOW)
                 calculation_q3[2].set_color(YELLOW)
                 calculation_q3[-1].set_color(YELLOW)
                 q3_brace = Brace(
-                    VGroup(data_ordered[it:ib]),
+                    VGroup(data_ordered[ib:it+1]),
                     RIGHT,
                     sharpness=0.1
-                )
+                )#.next_to(VGroup(data_ordered[ib:it]), RIGHT)
                 self.play(
                     # Write(calculation),
                     TransformFromCopy(
-                        VGroup(data_ordered[it:ib]),
+                        VGroup(data_ordered[ib:it]),
                         calculation_q3
                     ),
                     FadeOut(topArrow, botArrow),
@@ -257,12 +342,64 @@ class UgrupperetData(Slide if slides else Scene):
                     num_decimal_places=1,
                     color=YELLOW
                 ).scale(0.5).next_to(calculation_q3, RIGHT, buff=-0.15)
+                q3num = np.mean(nums)
                 self.add(q3)
                 self.play(
-                    q3.animate.next_to(steps[3], RIGHT, buff=0.5),
+                    q3.animate.next_to(steps[3:], RIGHT, buff=0.25),
                     # data_ordered[index_median+1:index_q3].animate.set_color(topArrow.get_color()),
                     # data_ordered[index_q3+1:].animate.set_color(botArrow.get_color()),
                 )
                 break
 
+        self.slide_pause(0.5)
 
+        kvartiler = [min(data_raw), q1num, median.get_value(),
+                     q3num, max(data_raw)]
+        kvartil_tekst = Tex(
+            "Kvartilsættet er derfor"
+        )
+        kvartilsaet = MathTex(
+            "\{", q1num, "; ", median.get_value(), "; ", q3num, "\}"
+        ).next_to(kvartil_tekst, DOWN)
+        for i in [1, 3, 5]:
+            kvartilsaet[i].set_color(YELLOW)
+        self.play(
+            *[m.animate.set_opacity(0.25) for m in self.mobjects],  # if m not in [median, q1, q3]],
+            # *[m.animate.set_opacity(1) for m in [median, q1]],
+            TransformFromCopy(VGroup(median, q1, q3), kvartilsaet),
+            Write(kvartil_tekst),
+            run_time=2
+        )
+        self.slide_pause(0.5)
+
+        kvartilu_tekst = Tex(
+            "Det udvidede kvartilsæt er"
+        )
+        kvartilsaetu = MathTex(
+            "\{", min(data_raw), "; ", q1num, "; ",
+            median.get_value(), "; ", q3num, "; ", max(data_raw), "\}"
+        ).next_to(kvartil_tekst, DOWN)
+        for i in [1, 3, 5, 7, 9]:
+            kvartilsaetu[i].set_color(YELLOW)
+        self.play(
+            Transform(
+                kvartil_tekst,
+                kvartilu_tekst
+            ),
+            Transform(
+                kvartilsaet,
+                kvartilsaetu
+            ),
+            run_time=2
+        )
+        self.slide_pause(0.5)
+
+        self.play(
+            kvartilu_tekst.animate.to_edge(UL),
+            kvartilsaetu.animate.to_edge(UP).shift(3*RIGHT),
+            *[FadeOut(m) for m in self.mobjects if m not in [kvartilsaetu, kvartilu_tekst]],
+            run_time=2
+        )
+        self.slide_pause(0.5)
+
+        boksplot = self.tegn_boksplot(kvartiler, kvartilsaetu)
