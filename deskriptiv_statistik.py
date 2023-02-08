@@ -2,7 +2,7 @@ from manim import *
 from helpers import *
 import numpy as np
 
-slides = False
+slides = True
 if slides:
     from manim_slides import Slide
 
@@ -11,7 +11,7 @@ class UgrupperetData(Slide if slides else Scene):
     def construct(self):
         title = Tex("Ugrupperet", " data")
         title[0].set_color(YELLOW)
-        # play_title(self, title)
+        play_title(self, title)
         self.slide_pause(0.5)
         self.kvartiler()
         self.slide_pause(5)
@@ -172,7 +172,8 @@ class UgrupperetData(Slide if slides else Scene):
         for i in np.arange(len(data)-2)+1:
             self.play(
                 topArrow.animate.next_to(data_ordered[i], LEFT),
-                botArrow.animate.next_to(data_ordered[-1-i], RIGHT)
+                botArrow.animate.next_to(data_ordered[-1-i], RIGHT),
+                run_time=2/(0.2*i+1)
             )
             if topArrow.get_center()[1] <= botArrow.get_center()[1]:
                 self.play(
@@ -215,7 +216,8 @@ class UgrupperetData(Slide if slides else Scene):
         for i in np.arange(index_median) + 1:
             self.play(
                 topArrow.animate.next_to(data_ordered[i], LEFT),
-                botArrow.animate.next_to(data_ordered[index_median - i - 1], RIGHT)
+                botArrow.animate.next_to(data_ordered[index_median - i - 1], RIGHT),
+                run_time=2/(0.2*i+1)
             )
             if topArrow.get_center()[1] == botArrow.get_center()[1]:
                 print("HEJ")
@@ -296,7 +298,8 @@ class UgrupperetData(Slide if slides else Scene):
             ib = len(data) - i
             self.play(
                 topArrow.animate.next_to(data_ordered[it], LEFT),
-                botArrow.animate.next_to(data_ordered[ib], RIGHT)
+                botArrow.animate.next_to(data_ordered[ib], RIGHT),
+                run_time=2/(0.2*i+1)
             )
             if topArrow.get_center()[1] == botArrow.get_center()[1]:
                 print("HEJ")
