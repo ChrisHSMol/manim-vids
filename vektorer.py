@@ -10,12 +10,12 @@ if slides:
 
 class BasicVectors(Slide if slides else Scene):
     def construct(self):
-        bool_play_titles = False
+        bool_play_titles = True
         if bool_play_titles:
             title = Tex("Grundlæggende om ", "vektorer")
             title[1].set_color(YELLOW)
             _title, _title_ul_box = play_title(self, title, edge=DL)
-        # self.om_vektorer()
+        self.om_vektorer()
         self.slide_pause(0.5)
 
         if bool_play_titles:
@@ -26,6 +26,7 @@ class BasicVectors(Slide if slides else Scene):
             self.play(_title.animate.set_opacity(0.15).to_edge(DL, buff=0.05))
 
         self.vektor_koordinater()
+        self.play(*[FadeOut(m) for m in self.mobjects if m != _title])
         if bool_play_titles:
             play_title_reverse(self, _title, pos=[0, 0, 0])
         self.slide_pause(5)
@@ -213,12 +214,13 @@ class BasicVectors(Slide if slides else Scene):
         )
 
     def vektor_koordinater(self):
-        plane = NumberPlane()
+        plane = NumberPlane().add_coordinates()
         self.play(
             FadeIn(plane),
             run_time=0.5
         )
-        tekst_punkt = Tex("Vi starter med ", "punkter").to_edge(UL).set_z_index(plane.get_z_index()+2)
+        scene_marker("Punkters koordinater")
+        tekst_punkt = Tex("Koordinater for ", "punkter").to_edge(UL).set_z_index(plane.get_z_index()+2)
         tekst_punkt[1].set_color(RED)
         tekst_punkt = VGroup(
             tekst_punkt,
@@ -240,7 +242,7 @@ class BasicVectors(Slide if slides else Scene):
         )
         point_coord = always_redraw(lambda:
             Tex(
-                "(", x_tracker.get_value(), "; ", y_tracker.get_value(), ")"
+                "(", f"{x_tracker.get_value():3.1f}", "; ", f"{y_tracker.get_value():3.1f}", ")"
             ).next_to(point, DR).set_z_index(point.get_z_index())
         )
         point_coord = VGroup(
@@ -248,10 +250,173 @@ class BasicVectors(Slide if slides else Scene):
             SurroundingRectangle(point_coord, color=BLACK, fill_color=BLACK, buff=0.1, stroke_width=0.1,
                                  fill_opacity=0.5, z_index=point_coord.get_z_index() - 1)
         )
+        vert_line = always_redraw(lambda:
+            Line(
+                start=plane.c2p(x_tracker.get_value(), 0, 0),
+                end=plane.c2p(x_tracker.get_value(), y_tracker.get_value(), 0),
+                color=RED_C,
+                stroke_width=3
+            )
+        )
+        hori_line = always_redraw(lambda:
+            Line(
+                start=plane.c2p(0, y_tracker.get_value(), 0),
+                end=plane.c2p(x_tracker.get_value(), y_tracker.get_value(), 0),
+                color=RED_C,
+                stroke_width=3
+            )
+        )
 
+        self.slide_pause(0.5)
         self.play(
             DrawBorderThenFill(point),
             FadeIn(point_coord),
             run_time=0.5
         )
+        self.add(vert_line, hori_line)
+        self.slide_pause(0.5)
 
+        i = 0
+        for x, y in zip(
+            [1, 3, -1, -4, 3, 0],
+            [0, 1, 3, -2, -1, 0]
+        ):
+            self.play(
+                x_tracker.animate.set_value(x),
+                y_tracker.animate.set_value(y),
+            )
+            xs_pause(self)
+            if i == 1:
+                ts = VGroup(
+                    DecimalNumber(y_tracker.get_value(), num_decimal_places=0,
+                                  color=vert_line.get_color()).scale(0.75).next_to(vert_line, LEFT),
+                    DecimalNumber(x_tracker.get_value(), num_decimal_places=0,
+                                  color=hori_line.get_color()).scale(0.75).next_to(hori_line, DOWN),
+                )
+                self.play(FadeIn(ts))
+                self.slide_pause(0.5)
+                self.play(FadeOut(ts))
+            i += 1
+        self.slide_pause(0.5)
+        self.play(
+            FadeOut(point),
+            FadeOut(point_coord),
+            run_time=0.5
+        )
+        # self.remove(vert_line, hori_line)
+        self.slide_pause(0.5)
+
+        scene_marker("Vektorers koordinater")
+        tekst_vektor = Tex("Koordinater for ", "vektorer").to_edge(UL).set_z_index(plane.get_z_index()+2)
+        tekst_vektor[1].set_color(YELLOW)
+        tekst_vektor = VGroup(
+            tekst_vektor,
+            SurroundingRectangle(tekst_vektor, color=BLACK, fill_color=BLACK, buff=0.1, stroke_width=0.1,
+                                 fill_opacity=0.5, z_index=tekst_vektor.get_z_index() - 1)
+        )
+        self.play(AnimationGroup(
+            FadeOut(tekst_punkt[0][-1], shift=UP*0.5),
+            FadeIn(tekst_vektor[0][-1], shift=UP*0.5)
+        ))
+        self.slide_pause(0.5)
+
+        vector = always_redraw(lambda:
+            Vector(
+                direction=plane.c2p(x_tracker.get_value(), y_tracker.get_value(), 0),
+                color=YELLOW
+            )
+        )
+        self.add(vector)
+        self.play(
+            x_tracker.animate.set_value(1.0),
+            y_tracker.animate.set_value(2.0)
+        )
+        self.slide_pause(0.5)
+
+        vector_coord = always_redraw(lambda:
+            Matrix(
+                [[f"{x_tracker.get_value():3.2f}"],
+                 [f"{y_tracker.get_value():3.2f}"]]
+            ).next_to(vector, RIGHT)
+        )
+        self.play(
+            DrawBorderThenFill(
+                vector_coord
+            )
+        )
+
+        for x, y in zip(
+            [1, 3, -1, -4, 3, 2],
+            [0, 1, 3, -2, -1, 1]
+        ):
+            self.play(
+                x_tracker.animate.set_value(x),
+                y_tracker.animate.set_value(y),
+            )
+            xs_pause(self)
+        self.slide_pause(0.5)
+        self.play(FadeOut(vector_coord), run_time=0.5)
+
+        scene_marker("Polære koordinater")
+        vek_bue = always_redraw(lambda:
+            Arc(
+                radius=0.75,
+                start_angle=0,
+                angle=vector.get_angle(),
+                color=YELLOW
+            )
+        )
+        hori_line2 = always_redraw(lambda:
+            Line(
+                start=plane.c2p(0, 0, 0),
+                end=plane.c2p(x_tracker.get_value(), 0, 0),
+                color=RED_C,
+                stroke_width=3
+            )
+        )
+        self.play(
+            # FadeOut(VGroup(vert_line, hori_line)),
+            hori_line.animate.move_to(hori_line2),
+            Create(
+                vek_bue
+            )
+        )
+        self.remove(hori_line)
+        self.add(hori_line2)
+
+        self.slide_pause(0.5)
+        self.play(
+            x_tracker.animate.set_value(5.0),
+            y_tracker.animate.set_value(3.0),
+        )
+        vec_ang = always_redraw(lambda:
+            DecimalNumber(
+                vector.get_angle() * 180/PI,
+                num_decimal_places=1,
+                include_sign=True,
+                color=vek_bue.get_color()
+            ).scale(0.75).next_to(vek_bue, RIGHT)
+        )
+        vec_len = always_redraw(lambda:
+            DecimalNumber(
+                vector.get_length(),
+                num_decimal_places=1,
+                color=vector.get_color()
+            ).scale(0.75).next_to(vector, np.mean([UR, DL])).shift(0.5*UP)
+        )
+        self.play(
+            Write(vec_ang),
+            Write(vec_len)
+        )
+        self.slide_pause(0.5)
+
+        for x, y in zip(
+            [3, -1, -4, 3, 4],
+            [1, 3, -2, -1, 3]
+        ):
+            self.play(
+                x_tracker.animate.set_value(x),
+                y_tracker.animate.set_value(y),
+            )
+            xs_pause(self)
+        self.slide_pause(0.5)
