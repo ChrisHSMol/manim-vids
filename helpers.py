@@ -29,12 +29,13 @@ def play_title(self, title, cols=None, edge=None):
     self.wait(2)
     if edge is not None:
         self.play(
-            title.animate.to_edge(edge, buff=0.5).set_z_index(10),
+            title.animate.to_edge(edge, buff=0.05).set_z_index(10).set_opacity(0.15),
         )
         self.play(
-            FadeIn(title_ul_box.set_opacity(0.5).to_edge(edge, buff=0.5).set_z_index(9)),
+            FadeIn(title_ul_box.set_opacity(0.5).to_edge(edge, buff=0.05).set_z_index(9)),
             run_time=0.1
         )
+        return title, title_ul_box
     else:
         self.play(GrowFromCenter(title_ul), run_time=1)
         self.add(ul_group)
@@ -44,15 +45,21 @@ def play_title(self, title, cols=None, edge=None):
     self.wait(2)
 
 
-def play_title_reverse(self, title):
+def play_title_reverse(self, title, pos=None):
     if isinstance(title, str):
         title = Tex(title)
     title_ul, title_ul_box, ul_group = _prep_title(title, close=True)
-    self.add(title, ul_group)
-    self.play(GrowFromCenter(title_ul))
-    self.play(ul_group.animate.shift(DOWN * title_ul_box.height))
-    self.remove(ul_group)
-    self.play(ShrinkToCenter(title_ul))
+    if pos is None:
+        self.add(title, ul_group)
+        self.play(GrowFromCenter(title_ul), run_time=1)
+        self.play(ul_group.animate.shift(DOWN * title_ul_box.height))
+        self.remove(ul_group)
+        self.play(ShrinkToCenter(title_ul))
+    else:
+        self.play(
+            title.animate.move_to(pos).set_z_index(0).set_opacity(1.0)
+        )
+        # title_ul, title_ul_box, ul_group = _prep_title(title, close=True)
     self.wait(1)
     self.play(Unwrite(title), run_time=0.5)
     self.wait(1)
@@ -147,3 +154,10 @@ def slides_pause(self, t=1.0, slides_bool=slides):
         self.play(FadeOut(indicator), run_time=0.25)
     else:
         self.wait(t)
+
+
+def scene_marker(scene_name):
+    print("-" * 20)
+    print(scene_name)
+    print("-" * 20)
+
