@@ -3,7 +3,7 @@ from helpers import *
 import numpy as np
 import math
 
-slides = False
+slides = True
 if slides:
     from manim_slides import Slide
 
@@ -390,12 +390,14 @@ class BasicVectors(Slide if slides else Scene):
             y_tracker.animate.set_value(3.0),
         )
         vec_ang = always_redraw(lambda:
-            DecimalNumber(
-                vector.get_angle() * 180/PI,
-                num_decimal_places=1,
-                include_sign=True,
-                color=vek_bue.get_color()
-            ).scale(0.75).next_to(vek_bue, RIGHT)
+            # DecimalNumber(
+            #     vector.get_angle() * 180/PI,
+            #     num_decimal_places=1,
+            #     include_sign=True,
+            #     color=vek_bue.get_color()
+            # ).scale(0.75).next_to(vek_bue, RIGHT)
+            MathTex(f"{vector.get_angle() * 180/PI:.1f}^\circ",
+                    color=vek_bue.get_color()).scale(0.75).next_to(vek_bue, RIGHT)
         )
         vec_len = always_redraw(lambda:
             DecimalNumber(
