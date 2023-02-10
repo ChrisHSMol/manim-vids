@@ -3,7 +3,7 @@ from helpers import *
 import numpy as np
 import math
 
-slides = True
+slides = False
 if slides:
     from manim_slides import Slide
 
@@ -422,3 +422,117 @@ class BasicVectors(Slide if slides else Scene):
             )
             xs_pause(self)
         self.slide_pause(0.5)
+
+
+class RegnereglerVektorer(Slide if slides else Scene):
+    def construct(self):
+        bool_play_title = False
+        if bool_play_title:
+            title = Tex("Vektorers ", "regneregler")
+            title[1].set_color(YELLOW)
+            _title, _title_ul_box = play_title(self, title, edge=DL)
+
+        self.sum_af_vektorer()
+        self.slide_pause(5.0)
+
+    def slide_pause(self, t=0.5, slides_bool=slides):
+        return slides_pause(self, t, slides_bool)
+
+    def sum_af_vektorer(self):
+        plane = NumberPlane(
+            x_range=[-16, 16, 1],
+            y_range=[-9, 9, 1],
+            x_length=16,
+            y_length=9,
+            background_line_style={
+                "stroke_color": TEAL,
+                "stroke_width": 4,
+                "stroke_opacity": 0.3
+            }
+        )
+        x_a, y_a = ValueTracker(2), ValueTracker(1)
+        x_b, y_b = ValueTracker(1), ValueTracker(2)
+        vec_a = always_redraw(lambda: Vector(
+            plane.c2p(x_a.get_value(), y_a.get_value()),
+            color=RED
+        ))
+        vec_b = always_redraw(lambda: Vector(
+            plane.c2p(x_b.get_value(), y_b.get_value()),
+            color=BLUE
+        ))
+
+        self.play(
+            DrawBorderThenFill(
+                plane
+            )
+        )
+        self.slide_pause()
+
+        v_line_a = always_redraw(lambda:
+            DashedLine(start=plane.c2p(x_a.get_value(), 0, 0),
+                       end=plane.c2p(x_a.get_value(), y_a.get_value(), 0),
+                       color=vec_a.get_color(), stroke_width=2)
+        )
+        h_line_a = always_redraw(lambda:
+            DashedLine(start=plane.c2p(0, y_a.get_value(), 0),
+                       end=plane.c2p(x_a.get_value(), y_a.get_value(), 0),
+                       color=vec_a.get_color(), stroke_width=2)
+        )
+        v_line_b = always_redraw(lambda:
+            DashedLine(start=plane.c2p(x_b.get_value(), 0, 0),
+                       end=plane.c2p(x_b.get_value(), y_b.get_value(), 0),
+                       color=vec_b.get_color(), stroke_width=2)
+        )
+        h_line_b = always_redraw(lambda:
+            DashedLine(start=plane.c2p(0, y_b.get_value(), 0),
+                       end=plane.c2p(x_b.get_value(), y_b.get_value(), 0),
+                       color=vec_b.get_color(), stroke_width=2)
+        )
+
+        coord_a = always_redraw(lambda:
+            Matrix(
+                [[f"{x_a.get_value():2.1f}"],
+                 [f"{y_a.get_value():2.1f}"]]
+            ).next_to(vec_a, RIGHT).set_column_colors(vec_a.get_color()).scale(0.75)
+        )
+        coord_b = always_redraw(lambda:
+            Matrix(
+                [[f"{x_b.get_value():2.1f}"],
+                 [f"{y_b.get_value():2.1f}"]]
+            ).next_to(vec_b, UP).set_column_colors(vec_b.get_color()).scale(0.75)
+        )
+
+        va = VGroup(vec_a, coord_a, v_line_a, h_line_a)
+        vb = VGroup(vec_b, coord_b, v_line_b, h_line_b)
+        self.play(
+            GrowArrow(vec_a),
+            Write(coord_a),
+            Create(VGroup(v_line_a, h_line_a))
+        )
+        self.slide_pause()
+        for x, y in zip([4, 1, 2], [-2, 3, 1]):
+            self.play(
+                x_a.animate.set_value(x),
+                y_a.animate.set_value(y),
+                run_time=2
+            )
+        self.slide_pause()
+
+        self.play(
+            TransformFromCopy(va, vb),
+            run_time=2
+        )
+        self.slide_pause()
+
+        self.play(
+            x_a.animate.set_value(4),
+            y_b.animate.set_value(4),
+            run_time=2
+        )
+        self.slide_pause()
+
+        self.play(
+            vec_a.animate.set_opacity(0.25),
+            vec_b.animate.set_opacity(0.25)
+        )
+
