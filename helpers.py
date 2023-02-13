@@ -161,3 +161,7 @@ def scene_marker(scene_name):
     print(scene_name)
     print("-" * 20)
 
+
+def between_mobjects(left_mob, right_mob):
+    return 0.5*(right_mob.get_edge_center(LEFT) + left_mob.get_edge_center(RIGHT))
+

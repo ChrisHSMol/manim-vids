@@ -428,17 +428,18 @@ class RegnereglerVektorer(Slide if slides else Scene):
     def construct(self):
         bool_play_title = False
         if bool_play_title:
-            title = Tex("Vektorers ", "regneregler")
-            title[1].set_color(YELLOW)
-            _title, _title_ul_box = play_title(self, title, edge=DL)
+            title = Tex("Sum ", "af to vektorer")
+            title[0].set_color(YELLOW)
+            _title, _title_ul_box = play_title(self, title, edge=UL)
 
-        self.sum_af_vektorer()
+        # self.sum_af_vektorer()
+        self.kommutativ_regel()
         self.slide_pause(5.0)
 
     def slide_pause(self, t=0.5, slides_bool=slides):
         return slides_pause(self, t, slides_bool)
 
-    def sum_af_vektorer(self):
+    def _sum_af_vektorer(self):
         plane = NumberPlane(
             x_range=[-16, 16, 1],
             y_range=[-9, 9, 1],
@@ -452,12 +453,30 @@ class RegnereglerVektorer(Slide if slides else Scene):
         )
         x_a, y_a = ValueTracker(2), ValueTracker(1)
         x_b, y_b = ValueTracker(1), ValueTracker(2)
-        vec_a = always_redraw(lambda: Vector(
-            plane.c2p(x_a.get_value(), y_a.get_value()),
+        offset_a_x, offset_a_y = ValueTracker(0), ValueTracker(0)
+        offset_b_x, offset_b_y = ValueTracker(0), ValueTracker(0)
+        # vec_a = always_redraw(lambda: Vector(
+        #     plane.c2p(x_a.get_value(), y_a.get_value()),
+        #     color=RED
+        # ).move_to(
+        #     plane.c2p(offset_a_x.get_value(), offset_a_y.get_value()) + 0.5*plane.c2p(x_a.get_value(), y_a.get_value())
+        # ))
+        # vec_b = always_redraw(lambda: Vector(
+        #     plane.c2p(x_b.get_value(), y_b.get_value()),
+        #     color=BLUE
+        # ).move_to(
+        #     plane.c2p(offset_b_x.get_value(), offset_b_y.get_value()) + 0.5*plane.c2p(x_b.get_value(), y_b.get_value())
+        # ))
+        vec_a = always_redraw(lambda: Arrow(
+            start=plane.c2p(offset_a_x.get_value(), offset_a_y.get_value()),
+            end=plane.c2p(x_a.get_value(), y_a.get_value()),
+            buff=0,
             color=RED
         ))
-        vec_b = always_redraw(lambda: Vector(
-            plane.c2p(x_b.get_value(), y_b.get_value()),
+        vec_b = always_redraw(lambda: Arrow(
+            start=plane.c2p(offset_b_x.get_value(), offset_b_y.get_value()),
+            end=plane.c2p(x_b.get_value(), y_b.get_value()),
+            buff=0,
             color=BLUE
         ))
 
@@ -532,7 +551,342 @@ class RegnereglerVektorer(Slide if slides else Scene):
         self.slide_pause()
 
         self.play(
-            vec_a.animate.set_opacity(0.25),
-            vec_b.animate.set_opacity(0.25)
+            offset_a_x.animate.set_value(x_b.get_value()),
+            offset_a_y.animate.set_value(y_b.get_value()),
+            x_a.animate.set_value(x_a.get_value() + x_b.get_value()),
+            y_a.animate.set_value(y_a.get_value() + y_b.get_value()),
         )
+        self.slide_pause()
+
+        sum_vector = always_redraw(lambda:
+            Vector(
+                plane.c2p(x_a.get_value() + x_b.get_value(), y_a.get_value() + y_b.get_value()),
+                color=PURPLE
+            )
+        )
+        sum_coord = always_redraw(lambda:
+            Matrix(
+                [[f"{x_a.get_value() + x_b.get_value():2.1f}"],
+                 [f"{y_a.get_value() + y_b.get_value():2.1f}"]]
+            ).next_to(sum_vector, UP).set_column_colors(sum_vector.get_color()).scale(0.75)
+        )
+        self.play(
+            GrowArrow(sum_vector),
+            # Write(sum_coord)
+        )
+
+    def sum_af_vektorer(self):
+        plane = NumberPlane(
+            x_range=[-16, 16, 1],
+            y_range=[-9, 9, 1],
+            x_length=16,
+            y_length=9,
+            background_line_style={
+                "stroke_color": TEAL,
+                "stroke_width": 4,
+                "stroke_opacity": 0.3
+            }
+        )
+        self.play(DrawBorderThenFill(plane))
+        self.slide_pause()
+
+        xa, ya = ValueTracker(4), ValueTracker(1)
+        xb, yb = ValueTracker(2), ValueTracker(3)
+
+        vec_a = always_redraw(lambda: Vector(
+            plane.c2p(xa.get_value(), ya.get_value()),
+            color=RED
+        ))
+        vec_b = always_redraw(lambda: Vector(
+            plane.c2p(xb.get_value(), yb.get_value()),
+            color=BLUE
+        ))
+
+        coord_a = always_redraw(lambda:
+            Matrix(
+                [[f"{xa.get_value():2.1f}"],
+                 [f"{ya.get_value():2.1f}"]]
+            ).set_column_colors(vec_a.get_color()).scale(0.75).next_to(vec_a, DR)
+        )
+        coord_b = always_redraw(lambda:
+            Matrix(
+                [[f"{xb.get_value():2.1f}"],
+                 [f"{yb.get_value():2.1f}"]]
+            ).set_column_colors(vec_b.get_color()).scale(0.75).next_to(vec_b, UL)
+        )
+        self.play(
+            GrowArrow(vec_a),
+            Write(coord_a)
+        )
+        self.slide_pause()
+
+        for x, y in zip([1, -3, -2, 8, 4], [4, 1, -5, -1, 1]):
+            self.play(
+                xa.animate.set_value(x),
+                ya.animate.set_value(y)
+            )
+            xs_pause(self)
+        self.slide_pause()
+
+        self.play(
+            GrowArrow(vec_b),
+            Write(coord_b)
+        )
+        self.slide_pause()
+
+        vec_a_copy = always_redraw(lambda: Arrow(
+            start=vec_b.get_end(),
+            end=vec_b.get_end() + vec_a.get_end(),
+            buff=0,
+            color=RED,
+        ).set_opacity(0.15))
+        vec_b_copy = always_redraw(lambda: Arrow(
+            start=vec_a.get_end(),
+            end=vec_a.get_end() + vec_b.get_end(),
+            buff=0,
+            color=BLUE,
+        ).set_opacity(0.15))
+        self.play(LaggedStart(
+            *[
+                TransformFromCopy(vec_a, vec_a_copy),
+                TransformFromCopy(vec_b, vec_b_copy)
+            ],
+            lag_ratio=0.75
+        ), run_time=4)
+        self.slide_pause()
+
+        vec_sum = always_redraw(lambda: Vector(
+            plane.c2p(
+                xa.get_value() + xb.get_value(),
+                ya.get_value() + yb.get_value()
+            ),
+            color=PURPLE
+        ))
+        coord_sum = always_redraw(lambda:
+            Matrix(
+                [[f"{xa.get_value() + xb.get_value():2.1f}"],
+                 [f"{ya.get_value() + yb.get_value():2.1f}"]]
+            ).set_column_colors(vec_sum.get_color()).scale(0.75).next_to(vec_sum, UR)
+        )
+        for i in range(2):
+            if i:
+                self.play(
+                    GrowArrow(vec_sum),
+                    Write(coord_sum)
+                )
+            for x, y in zip([1, -3, -2, 8, 4], [4, 1, -5, -1, 1]):
+                self.play(
+                    xa.animate.set_value(x),
+                    ya.animate.set_value(y)
+                )
+                xs_pause(self)
+            self.slide_pause()
+
+        coord_a_fixed = always_redraw(lambda:
+            Matrix(
+                [[f"{xa.get_value():2.1f}"],
+                 [f"{ya.get_value():2.1f}"]]
+            ).set_column_colors(vec_a.get_color()).scale(0.75).to_edge(DL)
+        )
+        coord_b_fixed = always_redraw(lambda:
+            Matrix(
+                [[f"{xb.get_value():2.1f}"],
+                 [f"{yb.get_value():2.1f}"]]
+            ).set_column_colors(vec_b.get_color()).scale(0.75).next_to(coord_a_fixed, RIGHT, buff=1)
+        )
+        coord_sum_fixed = always_redraw(lambda:
+            Matrix(
+                [[f"{xa.get_value() + xb.get_value():2.1f}"],
+                 [f"{ya.get_value() + yb.get_value():2.1f}"]]
+            ).set_column_colors(vec_sum.get_color()).scale(0.75).next_to(coord_b_fixed, RIGHT, buff=1)
+        )
+        self.play(
+            TransformFromCopy(coord_a, coord_a_fixed),
+            TransformFromCopy(coord_b, coord_b_fixed),
+            TransformFromCopy(coord_sum, coord_sum_fixed),
+            FadeOut(coord_a),
+            FadeOut(coord_b),
+            FadeOut(coord_sum),
+        )
+        self.slide_pause()
+
+        eq_sum_text = always_redraw(lambda: VGroup(
+            Tex("+").move_to(between_mobjects(coord_a_fixed, coord_b_fixed)),
+            Tex("=").move_to(between_mobjects(coord_b_fixed, coord_sum_fixed))
+        ))
+        self.play(FadeIn(eq_sum_text))
+        self.slide_pause()
+
+        for x, y in zip([1, -3, -2, 8, 4], [4, 1, -5, -1, 1]):
+            self.play(
+                xa.animate.set_value(x),
+                ya.animate.set_value(y)
+            )
+            xs_pause(self)
+        self.slide_pause()
+
+        for x, y in zip([4, 3, -2, -7, 2], [1, -7, -5, 1, 3]):
+            self.play(
+                xb.animate.set_value(x),
+                yb.animate.set_value(y)
+            )
+            xs_pause(self)
+        self.slide_pause()
+
+    def kommutativ_regel(self):
+        beskrivelse = VGroup(
+            Tex("Den ", "kommutative", " regneregel siger,"),
+            Tex("at det er ligegyldigt i hvilken rækkefølge"),
+            Tex("man lægger ", "to vektorer", " sammen.")
+        ).arrange(DOWN, aligned_edge=LEFT)
+        beskrivelse[0][1].set_color(YELLOW)
+        beskrivelse[2][1].set_color((RED, BLUE))
+        self.play(
+            Write(beskrivelse)
+        )
+        self.slide_pause()
+        regel = MathTex(r"\vec{a}", "+", r"\vec{b}", "=", r"\vec{b}", "+", r"\vec{a}")
+        regel[0].set_color(RED)
+        regel[6].set_color(RED)
+        regel[2].set_color(BLUE)
+        regel[4].set_color(BLUE)
+        self.play(
+            beskrivelse.animate.shift(2*UP),
+            FadeIn(regel, shift=2*UP)
+        )
+        self.slide_pause()
+        self.play(
+            FadeOut(VGroup(beskrivelse, regel))
+        )
+
+        plane_left = NumberPlane(
+            x_range=[-6, 6, 1],
+            y_range=[-6, 6, 1],
+            x_length=6,
+            y_length=6,
+            background_line_style={
+                "stroke_color": TEAL,
+                "stroke_width": 1,
+                "stroke_opacity": 0.3
+            }
+        ).to_edge(LEFT).add_coordinates()
+        plane_right = plane_left.copy().to_edge(RIGHT)
+        self.play(
+            DrawBorderThenFill(
+                VGroup(plane_left, plane_right)
+            )
+        )
+        self.slide_pause()
+
+        xa, ya = ValueTracker(5), ValueTracker(2)
+        xb, yb = ValueTracker(-1), ValueTracker(3)
+        ab_opa = ValueTracker(1)
+        vec_a_left = always_redraw(lambda: Arrow(
+            plane_left.c2p(0, 0), plane_left.c2p(xa.get_value(), ya.get_value()), color=RED, buff=0
+        ).set_opacity(ab_opa.get_value()))
+        vec_b_left = always_redraw(lambda: Arrow(
+            plane_left.c2p(0, 0), plane_left.c2p(xb.get_value(), yb.get_value()), color=BLUE, buff=0
+        ).set_opacity(ab_opa.get_value()))
+        vec_a_right = always_redraw(lambda: Arrow(
+            plane_right.c2p(0, 0), plane_right.c2p(xa.get_value(), ya.get_value()), color=RED, buff=0
+        ).set_opacity(ab_opa.get_value()))
+        vec_b_right = always_redraw(lambda: Arrow(
+            plane_right.c2p(0, 0), plane_right.c2p(xb.get_value(), yb.get_value()), color=BLUE, buff=0
+        ).set_opacity(ab_opa.get_value()))
+
+        vec_a_text = VGroup(
+            MathTex(r"\vec{a}").set_color(vec_a_left.get_color()).next_to(plane_left, UP).shift(0.5*LEFT),
+            MathTex(r"\vec{a}").set_color(vec_a_right.get_color()).next_to(plane_right, UP).shift(0.5*RIGHT)
+        )
+        vec_b_text = VGroup(
+            MathTex(r"\vec{b}").set_color(vec_b_left.get_color()).next_to(plane_left, UP).shift(0.5*RIGHT),
+            MathTex(r"\vec{b}").set_color(vec_b_right.get_color()).next_to(plane_right, UP).shift(0.5*LEFT)
+        )
+
+        self.play(
+            *[GrowArrow(v) for v in [vec_a_left, vec_a_right, vec_b_right, vec_b_left]],
+            Write(VGroup(vec_a_text, vec_b_text))
+        )
+        self.slide_pause()
+
+        # for x, y in zip([-2, 1, 5], [1, 3, 2]):
+        for ax, bx, ay, by in np.random.uniform(low=-5, high=5, size=(5, 4)):
+            self.play(
+                xa.animate.set_value(ax),
+                ya.animate.set_value(ay),
+                xb.animate.set_value(bx),
+                yb.animate.set_value(by),
+            )
+            xs_pause(self)
+
+        vec_b_left_copy = always_redraw(lambda: Arrow(
+            start=plane_left.c2p(xa.get_value(), ya.get_value()),
+            end=plane_left.c2p(xa.get_value() + xb.get_value(), ya.get_value() + yb.get_value()),
+            color=vec_b_left.get_color(),
+            buff=0
+        ).set_opacity(ab_opa.get_value()))
+        vec_a_right_copy = always_redraw(lambda: Arrow(
+            start=plane_right.c2p(xb.get_value(), yb.get_value()),
+            end=plane_right.c2p(xb.get_value() + xa.get_value(), yb.get_value() + ya.get_value()),
+            color=vec_a_right.get_color(),
+            buff=0
+        ).set_opacity(ab_opa.get_value()))
+        self.play(
+            TransformFromCopy(vec_b_left, vec_b_left_copy),
+            TransformFromCopy(vec_a_right, vec_a_right_copy),
+            FadeOut(VGroup(vec_a_right, vec_b_left))
+        )
+        self.slide_pause()
+
+        vec_sum_left = always_redraw(lambda: Arrow(
+            plane_left.c2p(0, 0),
+            plane_left.c2p(xa.get_value() + xb.get_value(), ya.get_value() + yb.get_value()),
+            color=PURPLE, buff=0
+        ))
+        vec_sum_right = always_redraw(lambda: Arrow(
+            plane_right.c2p(0, 0),
+            plane_right.c2p(xb.get_value() + xa.get_value(), yb.get_value() + ya.get_value()),
+            color=PURPLE, buff=0
+        ))
+        eq_symbols = VGroup(
+            Tex("+").move_to(between_mobjects(vec_a_text[0], vec_b_text[0])),
+            Tex("+").move_to(between_mobjects(vec_b_text[1], vec_a_text[1])),
+            # Tex("=").move_to(between_mobjects(vec_b_text[0], vec_b_text[1]))
+        )
+        self.play(
+            *[GrowArrow(v) for v in [vec_sum_right, vec_sum_left]],
+            ab_opa.animate.set_value(0.25),
+            FadeIn(eq_symbols[:2])
+        )
+        self.slide_pause()
+
+        # for ax, bx, ay, by in zip(
+        #     [3, 5, 5, 5, -2],
+        #     [-1, -1, -4, -1, -2],
+        #     [-1, 2, 2, 2, -1],
+        #     [3, 3, -1, 3, 5]
+        # ):
+        for ax, bx, ay, by in np.random.uniform(low=-3, high=3, size=(5, 4)):
+            self.play(
+                xa.animate.set_value(ax),
+                xb.animate.set_value(bx),
+                ya.animate.set_value(ay),
+                yb.animate.set_value(by)
+            )
+            xs_pause(self)
+        self.play(
+            xa.animate.set_value(-2),
+            xb.animate.set_value(-2),
+            ya.animate.set_value(-1),
+            yb.animate.set_value(5)
+        )
+
+        regel.to_edge(UP, buff=0)
+        self.play(
+            plane_left.animate.move_to(ORIGIN),
+            plane_right.animate.move_to(ORIGIN),
+            Transform(VGroup(vec_a_text, vec_b_text, eq_symbols), regel),
+            run_time=3
+        )
+        self.slide_pause()
 
