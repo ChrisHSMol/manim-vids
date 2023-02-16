@@ -18,14 +18,17 @@ def _prep_title(title, close=False):
     return title_ul, title_ul_box, ul_group
 
 
-def play_title(self, title, cols=None, edge=None):
+def play_title(self, title, cols=None, edge=None, already_written=False):
     if isinstance(title, str):
         title = Tex(*[t + " " for t in title.split()])
     if cols is not None and isinstance(cols, dict):
         for k, v in cols.items():
             title[int(k)].set_color(v)
     title_ul, title_ul_box, ul_group = _prep_title(title)
-    self.play(Write(title), run_time=0.5)
+    if already_written:
+        self.add(title)
+    else:
+        self.play(Write(title), run_time=0.5)
     self.wait(2)
     if edge is not None:
         self.play(
@@ -45,11 +48,11 @@ def play_title(self, title, cols=None, edge=None):
     self.wait(2)
 
 
-def play_title_reverse(self, title, pos=None):
+def play_title_reverse(self, title, edge=None):
     if isinstance(title, str):
         title = Tex(title)
     title_ul, title_ul_box, ul_group = _prep_title(title, close=True)
-    if pos is None:
+    if edge is None:
         self.add(title, ul_group)
         self.play(GrowFromCenter(title_ul), run_time=1)
         self.play(ul_group.animate.shift(DOWN * title_ul_box.height))
@@ -57,12 +60,39 @@ def play_title_reverse(self, title, pos=None):
         self.play(ShrinkToCenter(title_ul))
     else:
         self.play(
-            title.animate.move_to(pos).set_z_index(0).set_opacity(1.0)
+            title.animate.move_to(edge).set_z_index(0).set_opacity(1.0)
         )
         # title_ul, title_ul_box, ul_group = _prep_title(title, close=True)
     self.wait(1)
     self.play(Unwrite(title), run_time=0.5)
     self.wait(1)
+
+
+def update_title(self, old_title, new_title, edge=None):
+    self.play(
+        old_title.animate.move_to(ORIGIN).set_opacity(1)
+    )
+    new_title.move_to(ORIGIN).set_opacity(1)
+    xs_pause(self)
+    self.play(
+        TransformMatchingTex(
+            old_title,
+            new_title,
+        )
+    )
+    s_pause(self)
+    title_ul_box = Rectangle(
+        width=new_title.width * 1.05,
+        height=new_title.height * 1.6
+    ).move_to(new_title).set_style(fill_opacity=0.5, stroke_width=0, fill_color=BLACK).set_z_index(9)
+    new_title.set_z_index(10)
+    if edge is not None:
+        self.play(
+            new_title.animate.to_edge(edge, buff=0.05).set_opacity(0.15),
+            title_ul_box.animate.to_edge(edge, buff=0.05)
+        )
+        s_pause(self)
+    return new_title, title_ul_box
 
 
 def p2p_anim(mob1, mob2, tex1, tex2=None, index=0):
