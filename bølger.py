@@ -11,6 +11,7 @@ if slides:
 class Egenskaber(Slide if slides else Scene):
     def construct(self):
         self.wavelength()
+        self.amplitude()
 
         self.slide_pause(5)
 
@@ -18,6 +19,7 @@ class Egenskaber(Slide if slides else Scene):
         return slides_pause(self, t, slides_bool)
 
     def wavelength(self):
+        scene_marker("Bølgelængde")
         plane = NumberPlane(
             x_range=[-16, 16, 1],
             y_range=[-9, 9, 1],
@@ -130,7 +132,7 @@ class Egenskaber(Slide if slides else Scene):
         )
         self.slide_pause()
 
-        for l in [5, 3, 2, 6, 1, 0.4, 10, 4]:
+        for l in [5, 3, 2, 6, 1, 0.4, 10, 6]:
             self.play(
                 l_tracker.animate.set_value(l),
                 x0_tracker.animate.set_value(-0.5*l),
@@ -138,5 +140,30 @@ class Egenskaber(Slide if slides else Scene):
             )
             self.slide_pause(0.1)
 
+        self.play(
+            *[FadeOut(m) for m in self.mobjects if m not in [plane, wave]]
+        )
+        self.remove(plane, wave)
+
     def amplitude(self):
+        scene_marker("Amplitude")
+        plane = NumberPlane(
+            x_range=[-16, 16, 1],
+            y_range=[-9, 9, 1],
+            x_length=16,
+            y_length=9,
+            background_line_style={
+                "stroke_color": TEAL,
+                "stroke_width": 1,
+                "stroke_opacity": 0.3
+            }
+        )
+        l = 6
+        amp_tracker = ValueTracker(4)
+        wave = always_redraw(lambda: plane.plot(
+            lambda x: amp_tracker.get_value()*np.sin(2*x*PI/l),
+            color=BLUE
+        ))
+        self.add(plane, wave)
+        self.slide_pause()
 
