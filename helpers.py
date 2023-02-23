@@ -195,3 +195,12 @@ def scene_marker(scene_name):
 def between_mobjects(left_mob, right_mob):
     return 0.5*(right_mob.get_edge_center(LEFT) + left_mob.get_edge_center(RIGHT))
 
+
+def get_background_rect(mobject, buff=0.5):
+    return Rectangle(
+        width=mobject.width + buff,
+        height=mobject.height + buff
+    ).move_to(mobject).set_style(
+        fill_opacity=0.85, stroke_width=0, fill_color=BLACK
+    ).set_z_index(mobject.get_z_index()-1)
+
