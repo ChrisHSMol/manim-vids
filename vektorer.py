@@ -3,7 +3,7 @@ from helpers import *
 import numpy as np
 import math
 
-slides = False
+slides = True
 if slides:
     from manim_slides import Slide
 
@@ -12,6 +12,7 @@ class BasicVectors(Slide if slides else Scene):
     def construct(self):
         bool_play_titles = True
         if bool_play_titles:
+            self.slide_pause()
             title = Tex("Grundlæggende om ", "vektorer")
             title[1].set_color(YELLOW)
             _title, _title_ul_box = play_title(self, title, edge=DL)
@@ -28,7 +29,7 @@ class BasicVectors(Slide if slides else Scene):
         self.vektor_koordinater()
         self.play(*[FadeOut(m) for m in self.mobjects if m != _title])
         if bool_play_titles:
-            play_title_reverse(self, _title, pos=[0, 0, 0])
+            play_title_reverse(self, _title, edge=ORIGIN)
         self.slide_pause(5)
 
     def slide_pause(self, t=1.0, slides_bool=slides):
@@ -428,6 +429,7 @@ class VektorOperationer(Slide if slides else Scene):
     def construct(self):
         bool_play_title = True
         if bool_play_title:
+            self.slide_pause()
             titles = self.intro()
             self.play(
                 *[FadeOut(m) for m in self.mobjects if m not in [titles[0]]],
