@@ -10,8 +10,9 @@ if slides:
 
 class Egenskaber(Slide if slides else Scene):
     def construct(self):
-        self.wavelength()
-        self.amplitude()
+        # self.wavelength()
+        # self.amplitude()
+        self.frekvens()
 
         self.slide_pause(5)
 
@@ -158,12 +159,141 @@ class Egenskaber(Slide if slides else Scene):
                 "stroke_opacity": 0.3
             }
         )
-        l = 6
+        length = 6
         amp_tracker = ValueTracker(4)
+        offset = ValueTracker(0)
         wave = always_redraw(lambda: plane.plot(
-            lambda x: amp_tracker.get_value()*np.sin(2*x*PI/l),
+            lambda x: amp_tracker.get_value()*np.sin(2*x*PI/length) + offset.get_value(),
             color=BLUE
         ))
         self.add(plane, wave)
         self.slide_pause()
 
+        amp_v_lines = always_redraw(lambda: VGroup(*[
+            Line(
+                start=plane.c2p(n*length/4, 0),
+                end=plane.c2p(n*length/4, wave.underlying_function(n*length/4)),
+                color=GREEN
+            ).set_opacity(0.4) for n in [1, 3]
+        ]))
+        amp_h_lines = always_redraw(lambda: VGroup(*[
+            Line(
+                start=plane.c2p(n*length/4, wave.underlying_function(n*length/4)),
+                end=plane.c2p(0, wave.underlying_function(n*length/4)),
+                color=GREEN
+            ).set_opacity(0.4) for n in [1, 3]
+        ]))
+        self.play(
+            LaggedStart(
+                Create(amp_v_lines),
+                Create(amp_h_lines),
+                lag_ratio=0.5
+            ),
+            run_time=2
+        )
+        self.slide_pause()
+
+        for amp in [1, 2, 7, amp_tracker.get_value()]:
+            self.play(
+                amp_tracker.animate.set_value(amp),
+                run_time=2
+            )
+            self.slide_pause(0.1)
+
+        amp_full = always_redraw(lambda: Line(
+            start=plane.c2p(0, wave.underlying_function(3*length/4)),
+            end=plane.c2p(0, wave.underlying_function(length/4)),
+            color=GREEN,
+            stroke_width=4
+        ))
+        amp_brace = always_redraw(lambda: BraceBetweenPoints(
+            # point_1=plane.c2p(0, )
+            point_1=amp_full.get_center(),
+            point_2=amp_full.get_top(),
+            color=GREEN,
+            direction=LEFT
+        ))
+        amp_text = always_redraw(lambda: MathTex(
+            f"A={amp_tracker.get_value():.1f}",
+            color=GREEN
+        ).next_to(amp_brace, LEFT))
+        # srec = VGroup(*[get_background_rect(m) for m in [amp_brace, amp_text]])
+        self.play(
+            Create(amp_full)
+        )
+        self.slide_pause()
+        self.play(
+            LaggedStart(
+                GrowFromCenter(amp_brace),
+                # FadeIn(srec),
+                Write(amp_text),
+                lag_ratio=0.3
+            ),
+            run_time=2
+        )
+        self.slide_pause()
+
+        for amp in [1, 2, 7, amp_tracker.get_value()]:
+            self.play(
+                amp_tracker.animate.set_value(amp),
+                run_time=2
+            )
+            self.slide_pause(0.1)
+
+        for off in [1, 2, -3, 4, offset.get_value()]:
+            self.play(
+                offset.animate.set_value(off),
+                run_time=2
+            )
+            self.slide_pause(0.1)
+
+        self.play(
+            *[FadeOut(m) for m in self.mobjects if m not in [plane, wave]]
+        )
+        self.remove(plane, wave)
+
+    def frekvens(self):
+        scene_marker("Frekvens")
+        plane = NumberPlane(
+            x_range=[-16, 16, 1],
+            y_range=[-9, 9, 1],
+            x_length=16,
+            y_length=9,
+            background_line_style={
+                "stroke_color": TEAL,
+                "stroke_width": 1,
+                "stroke_opacity": 0.3
+            }
+        )
+        length = 6
+        amp_tracker = ValueTracker(4)
+        phase_tracker = ValueTracker(0)
+        wave = always_redraw(lambda: plane.plot(
+            lambda x: amp_tracker.get_value()*np.sin(2*x*PI/length + phase_tracker.get_value()),
+            color=BLUE
+        ))
+        self.add(plane, wave)
+        self.slide_pause()
+
+        top_dot = always_redraw(lambda: Dot(
+            plane.c2p(length/4, wave.underlying_function(length/4)),
+            color=YELLOW
+        ))
+        self.play(Create(top_dot))
+        self.slide_pause()
+
+        for i in range(11):
+            self.play(
+                amp_tracker.animate.set_value(4 * (-1)**i),
+                run_time=1.5 if i==0 else 1,
+                rate_func=rate_functions.rush_into if i==0 else rate_functions.linear
+            )
+        self.slide_pause()
+
+        for phase in [16*PI, -16*PI, 0]:
+            self.play(
+                phase_tracker.animate.set_value(phase),
+                run_time=16,
+                rate_func=rate_functions.linear
+            )
+            self.slide_pause(0.1)
