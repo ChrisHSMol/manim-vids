@@ -3,7 +3,7 @@ from helpers import *
 import numpy as np
 import math
 
-slides = False
+slides = True
 if slides:
     from manim_slides import Slide
 
@@ -282,18 +282,36 @@ class Egenskaber(Slide if slides else Scene):
         self.play(Create(top_dot))
         self.slide_pause()
 
-        for i in range(11):
-            self.play(
-                amp_tracker.animate.set_value(4 * (-1)**i),
-                run_time=1.5 if i==0 else 1,
-                rate_func=rate_functions.rush_into if i==0 else rate_functions.linear
-            )
+        if slides:
+            self.start_loop()
+            self.play(amp_tracker.animate.set_value(-4),
+                      rate_func=rate_functions.linear,
+                      run_time=2)
+            self.play(amp_tracker.animate.set_value(4),
+                      rate_func=rate_functions.linear,
+                      run_time=2)
+            self.end_loop()
+        else:
+            for i in range(11):
+                self.play(
+                    amp_tracker.animate.set_value(4 * (-1)**i),
+                    run_time=1.5 if i==0 else 1,
+                    rate_func=rate_functions.rush_into if i==0 else rate_functions.linear
+                )
         self.slide_pause()
 
-        for phase in [16*PI, -16*PI, 0]:
-            self.play(
-                phase_tracker.animate.set_value(phase),
-                run_time=16,
-                rate_func=rate_functions.linear
-            )
-            self.slide_pause(0.1)
+        if slides:
+            self.start_loop()
+            self.play(phase_tracker.animate.set_value(32*PI),
+                      rate_func=rate_functions.linear,
+                      run_time=32)
+            phase_tracker.set_value(0)
+            self.end_loop()
+        else:
+            for i, phase in zip([1, 2, 1], [16*PI, -16*PI, 0]):
+                self.play(
+                    phase_tracker.animate.set_value(phase),
+                    run_time=16*i,
+                    rate_func=rate_functions.linear
+                )
+                self.slide_pause(0.1)
