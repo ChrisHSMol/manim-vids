@@ -12,7 +12,8 @@ class Egenskaber(Slide if slides else Scene):
     def construct(self):
         # self.wavelength()
         # self.amplitude()
-        self.frekvens()
+        # self.frekvens()
+        self.fart()
 
         self.slide_pause(5)
 
@@ -315,3 +316,170 @@ class Egenskaber(Slide if slides else Scene):
                     rate_func=rate_functions.linear
                 )
                 self.slide_pause(0.1)
+
+        self.play(
+            *[FadeOut(m) for m in self.mobjects if m not in [plane, wave]]
+        )
+        self.remove(plane, wave)
+
+    def _fart(self):
+        scene_marker("Fart")
+        plane = NumberPlane(
+            x_range=[-16, 16, 1],
+            y_range=[-9, 9, 1],
+            x_length=16,
+            y_length=9,
+            background_line_style={
+                "stroke_color": TEAL,
+                "stroke_width": 1,
+                "stroke_opacity": 0.3
+            }
+        )
+        length = 6
+        phase_tracker = ValueTracker(0)
+        wave = always_redraw(lambda: plane.plot(
+            lambda x: 4*np.sin(2*x*PI/length + phase_tracker.get_value()),
+            color=BLUE
+        ))
+        self.add(plane, wave)
+        self.slide_pause()
+
+        top_dot = always_redraw(lambda: Dot(
+            plane.c2p(length/4, wave.underlying_function(length/4)),
+            color=YELLOW
+        ))
+        self.play(Create(top_dot))
+        self.slide_pause()
+
+        v_text = VGroup(
+            Tex("Fart: "),
+            DecimalNumber(0, num_decimal_places=1, include_sign=False, color=BLUE)
+        ).arrange(RIGHT).to_edge(UL)
+        self.play(FadeIn(v_text), run_time=0.5)
+        self.slide_pause()
+
+        tid = 10
+        for v in [2, 4, 6, 0.5]:
+            self.play(v_text[1].animate.set_value(v), run_time=0.5)
+            self.play(
+                phase_tracker.animate.set_value(tid*v),#*2*PI),
+                rate_func=rate_functions.linear,
+                run_time=tid
+            )
+            xs_pause(self)
+            self.play(
+                phase_tracker.animate.set_value(0),
+                run_time=1
+            )
+            self.slide_pause()
+        # self.slide_pause()
+
+    def fart(self):
+        scene_marker("Fart")
+        colors = [RED, BLUE, PURPLE, GREEN]
+        plane = NumberPlane(
+            x_range=[-6.5, 6.5, 1],
+            y_range=[-3.25, 3.25, 1],
+            x_length=6.5,
+            y_length=3.25,
+            background_line_style={
+                "stroke_color": TEAL,
+                "stroke_width": 1,
+                "stroke_opacity": 0.4
+            }
+        )
+        planes = VGroup(*[
+            plane.copy().to_edge(edge) for edge in [UL, UR, DL, DR]
+        ])
+        srecs = VGroup(*[
+            SurroundingRectangle(
+                plane, buff=0, color=color, stroke_width=0.75
+            ) for plane, color in zip(planes, colors)
+        ])
+        length = 3
+        phase_trackers = [ValueTracker(0) for _ in planes]
+        waves = always_redraw(lambda: VGroup(*[
+            plane.plot(
+                lambda x: 2*np.sin(2*x*PI/length + phase_tracker.get_value()),
+                color=color
+            ) for plane, phase_tracker, color in zip(planes, phase_trackers, colors)
+        ]))
+        self.play(
+            LaggedStart(
+                FadeIn(srecs),
+                DrawBorderThenFill(planes),
+                DrawBorderThenFill(waves),
+                lag_ratio=0.33
+            ),
+            run_time=3
+        )
+        self.slide_pause()
+
+        dots = always_redraw(lambda: VGroup(*[
+            Dot(
+                # plane.c2p(length/4, wave.underlying_function(length/4)), color=YELLOW
+                plane.c2p(
+                    length/4,
+                    2*np.sin(PI/2 + phase_tracker.get_value())
+                ),
+                color=YELLOW
+            # ) for plane, wave in zip(planes, waves)
+            ) for plane, phase_tracker in zip(planes, phase_trackers)
+        ]))
+        self.play(DrawBorderThenFill(dots))
+        self.add(dots)
+        self.slide_pause()
+
+        v_texts = VGroup(
+            *[
+                VGroup(
+                    Tex("Fart: "),
+                    DecimalNumber(0, color=srec.get_color())
+                ).scale(0.75).arrange(RIGHT).next_to(
+                    srec, direc, buff=-0.3
+                ) for srec, direc in zip(srecs, [DOWN, DOWN, UP, UP])
+            ]
+        )
+        self.play(
+            Write(v_texts)
+        )
+        self.slide_pause()
+
+        vs = [0.5, 2, 4, 10]
+        self.play(
+            *[v_text[1].animate.set_value(v) for v_text, v in zip(v_texts, vs)],
+            run_time=1
+        )
+        self.slide_pause()
+        if slides:
+            self.start_loop()
+            self.play(
+                *[phase_tracker.animate.set_value(4*PI*v) for phase_tracker, v in zip(phase_trackers, vs)],
+                rate_func=rate_functions.linear,
+                run_time=4*PI
+            )
+            self.end_loop()
+        else:
+            tid = 30
+            self.play(
+                *[phase_tracker.animate.set_value(tid*v) for phase_tracker, v in zip(phase_trackers, vs)],
+                rate_func=rate_functions.linear,
+                run_time=tid
+            )
+            self.slide_pause()
+
+        # tid = 10
+        # for v in [2, 4, 6, 0.5]:
+        #     self.play(v_text[1].animate.set_value(v), run_time=0.5)
+        #     self.play(
+        #         phase_tracker.animate.set_value(tid*v),#*2*PI),
+        #         rate_func=rate_functions.linear,
+        #         run_time=tid
+        #     )
+        #     xs_pause(self)
+        #     self.play(
+        #         phase_tracker.animate.set_value(0),
+        #         run_time=1
+        #     )
+        #     self.slide_pause()
+        # # self.slide_pause()
