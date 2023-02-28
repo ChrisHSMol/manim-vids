@@ -3,17 +3,17 @@ from helpers import *
 import numpy as np
 import math
 
-slides = True
+slides = False
 if slides:
     from manim_slides import Slide
 
 
 class Egenskaber(Slide if slides else Scene):
     def construct(self):
-        # self.wavelength()
-        # self.amplitude()
-        # self.frekvens()
-        self.fart()
+        self.wavelength()
+        self.amplitude()
+        self.frekvens()
+        # self.fart()
 
         self.slide_pause(5)
 
