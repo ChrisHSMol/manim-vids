@@ -10,10 +10,10 @@ if slides:
 
 class Egenskaber(Slide if slides else Scene):
     def construct(self):
-        # self.wavelength()
-        # self.amplitude()
-        # self.frekvens()
-        self.fart()
+        self.wavelength()
+        self.amplitude()
+        self.frekvens()
+        # self.fart()
 
         self.slide_pause(5)
 

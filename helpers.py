@@ -204,3 +204,40 @@ def get_background_rect(mobject, buff=0.5):
         fill_opacity=0.85, stroke_width=0, fill_color=BLACK
     ).set_z_index(mobject.get_z_index()-1)
 
+
+def keyword_overlay(self):
+    srec = ScreenRectangle(height=10, stroke_width=0, fill_color=BLACK, fill_opacity=0.5)
+    self.play(FadeIn(srec), run_time=0.5)
+    droplets = VGroup(
+        Dot(UP, color=WHITE, radius=0.08),
+        Dot(UP, color=WHITE, radius=0.04),
+    )
+    # self.play(FadeIn(droplets, shift=DOWN))
+    # self.remove(droplet)
+    plane = NumberPlane()
+    paths = VGroup(
+        plane.plot(lambda x: -0.03 * x**2 + np.cos(x), x_range=[-8, 0]),
+        plane.plot(lambda x: -0.03 * x**2 + np.cos(x), x_range=[0, 8]),
+    )
+    circ = Circle(radius=1).shift(2*UP).rotate(-PI/2)
+    # self.add(paths, circ)
+    self.play(
+        # AnimationGroup(
+        #     MoveAlongPath(droplets[0], paths[0]),
+        #     MoveAlongPath(droplets[1], paths[1])
+        # ),
+        MoveAlongPath(droplets[0], paths[0]),
+        rate_func=rate_functions.rush_into,
+        run_time=2
+    )
+    self.play(
+        MoveAlongPath(droplets[0], circ),
+        rate_func=rate_functions.linear,
+        run_time=1
+    )
+    self.play(
+        MoveAlongPath(droplets[0], paths[1]),
+        rate_func=rate_functions.rush_from,
+        run_time=2
+    )
+
