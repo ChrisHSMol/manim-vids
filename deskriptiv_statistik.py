@@ -406,3 +406,111 @@ class UgrupperetData(Slide if slides else Scene):
         self.slide_pause(0.5)
 
         boksplot = self.tegn_boksplot(kvartiler, kvartilsaetu)
+
+
+class SampleSize(Slide if slides else Scene):
+    def construct(self):
+        np.random.seed(42)
+        self.slide_pause(0.1)
+        pop_size = 3
+        sam_size = ValueTracker(0.0)
+        # responds = Dot(radius=0.04, color=YELLOW)
+        num_res = 500
+
+        scene_marker("Genererer locations")
+        locs = [[0.1, 0, 0]]
+        for i in range(num_res - 1):
+            x, y = 10, 10
+            while x**2 + y**2 >= pop_size**2:
+                x, y = np.random.uniform(-pop_size, pop_size, 2)
+            locs.append([x, y, 0])
+        scene_marker(f"{len(locs)} locations genereret")
+
+        population = Circle(radius=pop_size, color=GREEN)
+        xt, yt = ValueTracker(0), ValueTracker(0)
+        sample = always_redraw(lambda:
+            Circle(radius=sam_size.get_value(), color=BLUE).move_to([xt.get_value(), yt.get_value(), 0])
+        )
+        # respondents = VGroup(*[
+        #     responds.copy().move_to(loc) for loc in locs
+        # ])
+        respondents = always_redraw(lambda: VGroup(*[
+            Dot(
+                radius=0.04,
+                # color=YELLOW if l[0]**2+l[1]**2 >= sam_size.get_value()**2 else BLUE
+                color=YELLOW if (l[0]-xt.get_value())**2 + (l[1]-yt.get_value())** 2 >= sam_size.get_value()**2 else BLUE
+            ).move_to(l) for l in locs
+        ]))
+        scene_marker("Respondenter genereret")
+
+        # num_sam = always_redraw(lambda: DecimalNumber(
+        #     len([l for l in locs if l[0] ** 2 + l[1] ** 2 < sam_size.get_value() ** 2])
+        # ))
+        disp_res = VGroup(Tex("Population: "), MathTex(f"{num_res}", color=GREEN)).arrange(RIGHT).to_edge(UL)
+        disp_sam = always_redraw(lambda: VGroup(
+            Tex("Respondenter: "),
+            # MathTex(f"{len([l for l in locs if l[0] ** 2 + l[1] ** 2 < sam_size.get_value() ** 2])}", color=BLUE)
+            # MathTex(f"{len([self.is_in_circle(l, sample) for l in locs])}", color=BLUE)
+            MathTex(
+                f"{len([l for l in locs if (l[0]-xt.get_value())**2 + (l[1]-yt.get_value())** 2 < sam_size.get_value()**2])}",
+                color=BLUE
+            )
+        ).arrange(RIGHT).next_to(disp_res, DOWN, aligned_edge=LEFT))
+        disp_pct = always_redraw(lambda: VGroup(
+            Tex("Pct.:"),
+            # MathTex(f"{len([l for l in locs if l[0] ** 2 + l[1] ** 2 < sam_size.get_value() ** 2])/num_res*100:.2f} \%", color=BLUE)
+            # MathTex(f"{len([self.is_in_circle(l, sample) for l in locs])/num_res*100:.2f} \%", color=BLUE)
+            MathTex(
+                f"{len([l for l in locs if (l[0]-xt.get_value())**2 + (l[1]-yt.get_value())** 2 < sam_size.get_value() ** 2])/num_res*100:.2f} \%",
+                color=BLUE
+            )
+        ).arrange(RIGHT).next_to(disp_sam, DOWN, aligned_edge=LEFT))
+
+        self.play(
+            Create(respondents),
+            run_time=2
+        )
+        self.slide_pause(0.5)
+        self.play(
+            DrawBorderThenFill(population),
+            run_time=0.5
+        )
+        self.slide_pause(0.5)
+        self.play(
+            DrawBorderThenFill(sample),
+            run_time=0.5
+        )
+        self.play(
+            Write(disp_res),
+            Write(disp_sam),
+            Write(disp_pct),
+            run_time=0.5
+        )
+        self.slide_pause()
+
+        for d in [4, 2, 1.1, 1]:
+            self.play(
+                sam_size.animate.set_value(pop_size/d),
+                run_time=5
+            )
+            self.slide_pause()
+            if d == 4:
+                for x, y in np.append(np.random.uniform(low=-2, high=2, size=(4, 2)), [[0, 0]], axis=0):
+                    self.play(
+                        xt.animate.set_value(x),
+                        yt.animate.set_value(y),
+                        run_time=3
+                    )
+                self.slide_pause()
+
+        self.slide_pause(5)
+
+    def slide_pause(self, t=1.0, slides_bool=slides):
+        return slides_pause(self, t, slides)
+
+    def is_in_circle(self, point, circle):
+        print((point[0]-circle.get_center()[0])**2, circle.radius**2)
+        if (point[0]-circle.get_center()[0])**2 + (point[1]-circle.get_center()[1])**2 < circle.get_radius()**2:
+            return point
+
+

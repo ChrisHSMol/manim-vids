@@ -3,7 +3,7 @@ from helpers import *
 import numpy as np
 import math
 
-slides = True
+slides = False
 if slides:
     from manim_slides import Slide
 
@@ -375,6 +375,7 @@ class Egenskaber(Slide if slides else Scene):
         # self.slide_pause()
 
     def fart(self):
+        wave_type = "dots"
         scene_marker("Fart")
         colors = [RED, BLUE, PURPLE, GREEN]
         plane = NumberPlane(
@@ -401,7 +402,7 @@ class Egenskaber(Slide if slides else Scene):
         waves = always_redraw(lambda: VGroup(*[
             plane.plot(
                 lambda x: 2*np.sin(2*x*PI/length + phase_tracker.get_value()),
-                color=color
+                color=color, stroke_width=0.25 if wave_type == "dots" else 1
             ) for plane, phase_tracker, color in zip(planes, phase_trackers, colors)
         ]))
         self.play(
@@ -415,6 +416,15 @@ class Egenskaber(Slide if slides else Scene):
         )
         self.slide_pause()
 
+        if wave_type == "dots":
+            wave_dots = always_redraw(lambda: VGroup(*[
+                VGroup(*[
+                    Dot(
+                        plane.c2p(x, 2*np.sin(x*2*PI/length + phase_tracker.get_value())),
+                        color=color, radius=0.04
+                    ) for x in np.linspace(-6.5, 6.5, 61)
+                ]) for plane, phase_tracker, color in zip(planes, phase_trackers, colors)
+            ]))
         dots = always_redraw(lambda: VGroup(*[
             Dot(
                 # plane.c2p(length/4, wave.underlying_function(length/4)), color=YELLOW
@@ -426,6 +436,7 @@ class Egenskaber(Slide if slides else Scene):
             # ) for plane, wave in zip(planes, waves)
             ) for plane, phase_tracker in zip(planes, phase_trackers)
         ]))
+        self.play(Create(wave_dots))
         self.play(DrawBorderThenFill(dots))
         self.add(dots)
         self.slide_pause()
