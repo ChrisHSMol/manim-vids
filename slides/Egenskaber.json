@@ -1,0 +1,75 @@
+{
+  "slides": [
+    {
+      "type": "slide",
+      "start_animation": 0,
+      "end_animation": 3,
+      "number": 1,
+      "terminated": false
+    },
+    {
+      "type": "slide",
+      "start_animation": 3,
+      "end_animation": 7,
+      "number": 2,
+      "terminated": false
+    },
+    {
+      "type": "slide",
+      "start_animation": 7,
+      "end_animation": 11,
+      "number": 3,
+      "terminated": false
+    },
+    {
+      "type": "slide",
+      "start_animation": 11,
+      "end_animation": 15,
+      "number": 4,
+      "terminated": false
+    },
+    {
+      "type": "loop",
+      "start_animation": 16,
+      "end_animation": 17,
+      "number": 5,
+      "terminated": false
+    },
+    {
+      "type": "slide",
+      "start_animation": 17,
+      "end_animation": 19,
+      "number": 6,
+      "terminated": false
+    },
+    {
+      "type": "last",
+      "start_animation": 19,
+      "end_animation": 20,
+      "number": 7,
+      "terminated": false
+    }
+  ],
+  "files": [
+    "./slides\\files\\Egenskaber\\2902699114_3192532331_2358810818.mp4",
+    "./slides\\files\\Egenskaber\\3931933789_1896079838_1351746739.mp4",
+    "./slides\\files\\Egenskaber\\3931933789_645682970_1485119142.mp4",
+    "./slides\\files\\Egenskaber\\3931933789_3286508854_213309775.mp4",
+    "./slides\\files\\Egenskaber\\3931933789_1721790074_1072418266.mp4",
+    "./slides\\files\\Egenskaber\\3931933789_1896079838_4231184389.mp4",
+    "./slides\\files\\Egenskaber\\3931933789_645682970_2064039826.mp4",
+    "./slides\\files\\Egenskaber\\3931933789_3286508854_2056990898.mp4",
+    "./slides\\files\\Egenskaber\\3931933789_503212633_2961843854.mp4",
+    "./slides\\files\\Egenskaber\\3931933789_1896079838_2717171452.mp4",
+    "./slides\\files\\Egenskaber\\3931933789_645682970_55502358.mp4",
+    "./slides\\files\\Egenskaber\\3931933789_3286508854_2492884428.mp4",
+    "./slides\\files\\Egenskaber\\3931933789_4075845336_4112533454.mp4",
+    "./slides\\files\\Egenskaber\\3931933789_1896079838_345457153.mp4",
+    "./slides\\files\\Egenskaber\\3931933789_645682970_3857513702.mp4",
+    "./slides\\files\\Egenskaber\\3931933789_3286508854_3726862721.mp4",
+    "./slides\\files\\Egenskaber\\3931933789_2105556478_2305060074.mp4",
+    "./slides\\files\\Egenskaber\\3931933789_1896079838_4026957910.mp4",
+    "./slides\\files\\Egenskaber\\3931933789_645682970_3975664.mp4",
+    "./slides\\files\\Egenskaber\\3931933789_3286508854_4199034959.mp4"
+  ]
+}
