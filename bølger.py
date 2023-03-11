@@ -375,6 +375,7 @@ class Egenskaber(Slide if slides else Scene):
         # self.slide_pause()
 
     def fart(self):
+        wave_type = "dots"
         scene_marker("Fart")
         colors = [RED, BLUE, PURPLE, GREEN]
         plane = NumberPlane(
@@ -401,7 +402,7 @@ class Egenskaber(Slide if slides else Scene):
         waves = always_redraw(lambda: VGroup(*[
             plane.plot(
                 lambda x: 2*np.sin(2*x*PI/length + phase_tracker.get_value()),
-                color=color
+                color=color, stroke_width=0.25 if wave_type == "dots" else 1
             ) for plane, phase_tracker, color in zip(planes, phase_trackers, colors)
         ]))
         self.play(
@@ -415,6 +416,15 @@ class Egenskaber(Slide if slides else Scene):
         )
         self.slide_pause()
 
+        if wave_type == "dots":
+            wave_dots = always_redraw(lambda: VGroup(*[
+                VGroup(*[
+                    Dot(
+                        plane.c2p(x, 2*np.sin(x*2*PI/length + phase_tracker.get_value())),
+                        color=color, radius=0.04
+                    ) for x in np.linspace(-6.5, 6.5, 61)
+                ]) for plane, phase_tracker, color in zip(planes, phase_trackers, colors)
+            ]))
         dots = always_redraw(lambda: VGroup(*[
             Dot(
                 # plane.c2p(length/4, wave.underlying_function(length/4)), color=YELLOW
@@ -426,6 +436,7 @@ class Egenskaber(Slide if slides else Scene):
             # ) for plane, wave in zip(planes, waves)
             ) for plane, phase_tracker in zip(planes, phase_trackers)
         ]))
+        self.play(Create(wave_dots))
         self.play(DrawBorderThenFill(dots))
         self.add(dots)
         self.slide_pause()
@@ -483,3 +494,59 @@ class Egenskaber(Slide if slides else Scene):
         #     )
         #     self.slide_pause()
         # # self.slide_pause()
+
+class Interferens(Slide if slides else Scene):
+    def construct(self):
+        self.konstr_destr()
+        self.slide_pause(5)
+
+    def slide_pause(self, t=1.0, slides_bool=slides):
+        return slides_pause(self, t, slides_bool)
+
+    def konstr_destr(self):
+        plane = NumberPlane(
+            x_range=[-16, 16, 1],
+            y_range=[-9, 9, 1],
+            x_length=16,
+            y_length=9,
+            background_line_style={
+                "stroke_color": TEAL,
+                "stroke_width": 1,
+                "stroke_opacity": 0.3
+            }
+        )
+        self.play(DrawBorderThenFill(plane))
+        self.slide_pause()
+
+        ampA, ampB = ValueTracker(4), ValueTracker(4)
+        phaA, phaB = ValueTracker(0), ValueTracker(0)
+        lowA, higA = ValueTracker(-20), ValueTracker(0)
+        lowB, higB = ValueTracker(0), ValueTracker(20)
+        length = 4
+        waveA = always_redraw(lambda:
+            plane.plot(
+                lambda x: ampA.get_value() * np.sin(2*x*PI/length + phaA.get_value()),
+                x_range=[lowA.get_value(), higA.get_value()],
+                color=RED
+            )
+        )
+        waveB = always_redraw(lambda:
+            plane.plot(
+                lambda x: ampB.get_value() * np.sin(2*x*PI/length + phaB.get_value()),
+                x_range=[lowB.get_value(), higB.get_value()],
+                color=BLUE
+            )
+        )
+        self.play(
+            Create(waveA),
+            Create(waveB),
+            run_time=1
+        )
+        self.slide_pause()
+
+        # self.play(
+        #     ampA.animate.set_value(4),
+        #     ampB.animate.set_value(2),
+        #     run_time=2
+        # )
+        # self.slide_pause()

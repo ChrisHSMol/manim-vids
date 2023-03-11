@@ -1,4 +1,5 @@
 # This file is used internally by FFMPEG.
+<<<<<<< HEAD
 file 'file:G:/Mit drev/Colab Notebooks/manim-vids/media/videos/bølger/480p15/partial_movie_files/Egenskaber/4266129954_329969645_1597200397.mp4'
 file 'file:G:/Mit drev/Colab Notebooks/manim-vids/media/videos/bølger/480p15/partial_movie_files/Egenskaber/1442284246_2386634590_3421207527.mp4'
 file 'file:G:/Mit drev/Colab Notebooks/manim-vids/media/videos/bølger/480p15/partial_movie_files/Egenskaber/1442284246_3315967912_700589001.mp4'
@@ -21,3 +22,25 @@ file 'file:G:/Mit drev/Colab Notebooks/manim-vids/media/videos/bølger/480p15/pa
 file 'file:G:/Mit drev/Colab Notebooks/manim-vids/media/videos/bølger/480p15/partial_movie_files/Egenskaber/1442284246_3173197072_3397637965.mp4'
 file 'file:G:/Mit drev/Colab Notebooks/manim-vids/media/videos/bølger/480p15/partial_movie_files/Egenskaber/1442284246_51972775_878848855.mp4'
 file 'file:G:/Mit drev/Colab Notebooks/manim-vids/media/videos/bølger/480p15/partial_movie_files/Egenskaber/1442284246_2292429055_726962090.mp4'
+=======
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/bølger/480p15/partial_movie_files/Egenskaber/4266129954_3192532331_2358810818.mp4'
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/bølger/480p15/partial_movie_files/Egenskaber/1442284246_1896079838_1351746739.mp4'
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/bølger/480p15/partial_movie_files/Egenskaber/1442284246_645682970_1485119142.mp4'
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/bølger/480p15/partial_movie_files/Egenskaber/1442284246_3286508854_213309775.mp4'
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/bølger/480p15/partial_movie_files/Egenskaber/1442284246_1721790074_1072418266.mp4'
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/bølger/480p15/partial_movie_files/Egenskaber/1442284246_1896079838_4231184389.mp4'
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/bølger/480p15/partial_movie_files/Egenskaber/1442284246_645682970_2064039826.mp4'
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/bølger/480p15/partial_movie_files/Egenskaber/1442284246_3286508854_2056990898.mp4'
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/bølger/480p15/partial_movie_files/Egenskaber/1442284246_503212633_2961843854.mp4'
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/bølger/480p15/partial_movie_files/Egenskaber/1442284246_1896079838_2717171452.mp4'
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/bølger/480p15/partial_movie_files/Egenskaber/1442284246_645682970_55502358.mp4'
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/bølger/480p15/partial_movie_files/Egenskaber/1442284246_3286508854_2492884428.mp4'
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/bølger/480p15/partial_movie_files/Egenskaber/1442284246_3801353364_4112533454.mp4'
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/bølger/480p15/partial_movie_files/Egenskaber/1442284246_1896079838_345457153.mp4'
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/bølger/480p15/partial_movie_files/Egenskaber/1442284246_645682970_3857513702.mp4'
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/bølger/480p15/partial_movie_files/Egenskaber/1442284246_3286508854_3726862721.mp4'
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/bølger/480p15/partial_movie_files/Egenskaber/1442284246_2105556478_2305060074.mp4'
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/bølger/480p15/partial_movie_files/Egenskaber/1442284246_1896079838_4026957910.mp4'
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/bølger/480p15/partial_movie_files/Egenskaber/1442284246_645682970_3975664.mp4'
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/bølger/480p15/partial_movie_files/Egenskaber/1442284246_3286508854_4199034959.mp4'
+>>>>>>> 8120466460b833fd167b792cfd2d065c423b464e
