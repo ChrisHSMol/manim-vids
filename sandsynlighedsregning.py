@@ -8,7 +8,7 @@ if slides:
     from manim_slides import Slide
 
 
-class MultiOgAddiPrincip(Slide if slides else Scene):
+class MultiOgAddiPrincip(Slide if slides else MovingCameraScene):
     def construct(self):
         self.counting_tree()
 
@@ -119,11 +119,6 @@ class MultiOgAddiPrincip(Slide if slides else Scene):
             ["Vanille", "Chokolade", "Jordbær"],
             ["Krymmel", "Guf"]
         ]
-        # node_colors = [
-        #     [RED, YELLOW],
-        #     [YELLOW, GREEN],
-        #     [GREEN, PINK]
-        # ]
         colors = [RED, YELLOW, GREEN, BLUE]
         node_colors = []
         for i in range(len(colors[:-1])):
@@ -165,24 +160,22 @@ class MultiOgAddiPrincip(Slide if slides else Scene):
         self.create_branch(third_level)
         self.slide_pause()
 
-        # for i in range(len(labels[0])):
-        #     for j in range(len(labels[1])):
-        #         for k in range(len(labels[2])):
-        #             self.highlight_path(
-        #                 levels=[first_level, second_level, third_level],
-        #                 indices=[i, j, k],
-        #                 node_cols=node_colors,
-        #                 preserve_color=True,
-        #                 rt=0.5
-        #             )
-
         self.play(start_level.animate.set_color(colors[0]))
         self.highlight_path(
             levels=[first_level, second_level, third_level],
             indices=[1, 0, 1],
-            # color=YELLOW,
             node_cols=node_colors,
             preserve_color=True,
             rt=5
         )
         self.slide_pause()
+
+        scene_marker("Multiplikationsprincippet")
+        self.camera.frame.save_state()
+        self.play(
+            self.camera.frame.animate.set(
+                width=20
+            ).move_to(ORIGIN + 2*DR),
+            run_time=3
+        )
+
