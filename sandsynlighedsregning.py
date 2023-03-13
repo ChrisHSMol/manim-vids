@@ -169,13 +169,26 @@ class MultiOgAddiPrincip(Slide if slides else MovingCameraScene):
             rt=5
         )
         self.slide_pause()
+        srec = Rectangle(
+            width=13.5, height=5.8
+        ).set_style(
+            fill_opacity=0.85,
+            stroke_width=1,
+            fill_color=BLACK,
+            stroke_color=YELLOW
+        ).shift(UP).set_z_index(-1)
+        self.play(Create(srec))
 
         scene_marker("Multiplikationsprincippet")
         self.camera.frame.save_state()
         self.play(
             self.camera.frame.animate.set(
                 width=20
-            ).move_to(ORIGIN + 2*DR),
+            ).move_to(ORIGIN + 1.5*DR),
             run_time=3
+        )
+        question = Tex("Hvor mange forskellige slags is kan man vælge?").next_to(srec, DOWN)
+        self.play(
+            Write(question)
         )
 
