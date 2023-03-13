@@ -13,7 +13,7 @@ class Egenskaber(Slide if slides else Scene):
         self.wavelength()
         self.amplitude()
         self.frekvens()
-        # self.fart()
+        self.fart()
 
         self.slide_pause(5)
 
@@ -35,6 +35,18 @@ class Egenskaber(Slide if slides else Scene):
         )
         self.play(DrawBorderThenFill(plane))
         self.slide_pause()
+
+        # sup_title = MarkupText("Bølgelængde, \lambda", color=RED).arrange(RIGHT).to_edge(UL)
+        # sup_title = VGroup(
+        #     Text(r"Bølgelængde, ", color=RED, font_size=36),
+        #     MathTex(r"\lambda", color=RED)
+        # ).arrange(RIGHT).set_z_index(8).scale(1).to_edge(UL)
+        # self.play(
+        #     Write(sup_title),
+        #     Create(get_background_rect(sup_title)),
+        #     run_time=0.5
+        # )
+        # self.slide_pause()
 
         l_tracker = ValueTracker(4)
         amp = 4
@@ -170,6 +182,17 @@ class Egenskaber(Slide if slides else Scene):
         self.add(plane, wave)
         self.slide_pause()
 
+        # sup_title = VGroup(
+        #     Text(r"Amplitude, ", color=GREEN, font_size=36),
+        #     MathTex(r"A", color=GREEN)
+        # ).arrange(RIGHT).set_z_index(8).scale(1).to_edge(UL)
+        # self.play(
+        #     Write(sup_title),
+        #     Create(get_background_rect(sup_title)),
+        #     run_time=0.5
+        # )
+        # self.slide_pause()
+
         amp_v_lines = always_redraw(lambda: VGroup(*[
             Line(
                 start=plane.c2p(n*length/4, 0),
@@ -276,6 +299,17 @@ class Egenskaber(Slide if slides else Scene):
         self.add(plane, wave)
         self.slide_pause()
 
+        # sup_title = VGroup(
+        #     Text(r"Frekvens, ", color=YELLOW, font_size=36),
+        #     MathTex(r"f", color=YELLOW)
+        # ).arrange(RIGHT).set_z_index(8).scale(1).to_edge(UL)
+        # self.play(
+        #     Write(sup_title),
+        #     Create(get_background_rect(sup_title)),
+        #     run_time=0.5
+        # )
+        # self.slide_pause()
+
         top_dot = always_redraw(lambda: Dot(
             plane.c2p(length/4, wave.underlying_function(length/4)),
             color=YELLOW
@@ -317,10 +351,13 @@ class Egenskaber(Slide if slides else Scene):
                 )
                 self.slide_pause(0.1)
 
+        # self.play(
+        #     *[FadeOut(m) for m in self.mobjects if m not in [plane, wave]]
+        # )
+        # self.remove(plane, wave)
         self.play(
-            *[FadeOut(m) for m in self.mobjects if m not in [plane, wave]]
+            *[FadeOut(m) for m in self.mobjects]
         )
-        self.remove(plane, wave)
 
     def _fart(self):
         scene_marker("Fart")
@@ -478,6 +515,10 @@ class Egenskaber(Slide if slides else Scene):
                 run_time=tid
             )
             self.slide_pause()
+
+        self.play(
+            *[FadeOut(m) for m in self.mobjects]
+        )
 
         # tid = 10
         # for v in [2, 4, 6, 0.5]:

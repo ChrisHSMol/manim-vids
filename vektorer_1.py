@@ -22,7 +22,7 @@ c = {
 
 class VektorIntro(Slide if slides else Scene):
     def construct(self):
-        bool_play_titles = False
+        bool_play_titles = True
         if bool_play_titles:
             titles = self.intro()
             self.slide_pause()
@@ -33,8 +33,8 @@ class VektorIntro(Slide if slides else Scene):
             edge = DL
             _title, _title_ul_box = play_title(self, titles[0], edge=edge, already_written=True)
 
-        # self.om_tal()
-        # self.om_punkter()
+        self.om_tal()
+        self.om_punkter()
 
         if bool_play_titles:
             self.play(
@@ -42,6 +42,13 @@ class VektorIntro(Slide if slides else Scene):
             )
             _title, _title_ul_box = update_title(self, titles[0], titles[1], edge=edge)
         self.om_vektorer()
+
+        if bool_play_titles:
+            self.play(
+                *[FadeOut(m) for m in self.mobjects if m not in [_title, _title_ul_box]]
+            )
+            _title, _title_ul_box = update_title(self, titles[1], titles[2], edge=edge)
+        self.vektor_koordinater()
         self.slide_pause(5)
 
     def slide_pause(self, t=1.0, slides_bool=slides):
@@ -157,7 +164,7 @@ class VektorIntro(Slide if slides else Scene):
                 end=nline.n2p(x_tracker.get_value()),
                 stroke_width=8,
                 color=dot.get_color(),
-                z_index=dot.get_z_index(),
+                z_index=nline.get_z_index() + 1,
                 buff=0
             )
         )
@@ -440,6 +447,18 @@ class VektorIntro(Slide if slides else Scene):
             )
             self.slide_pause(0.1)
 
+        dim_tekst_vek = Tex(
+            "Vektorer ", "kan også \"bevæge sig\" rundt i ", "2 dimensioner"
+        ).move_to(plane.c2p(0, -2)).set_z_index(plane.get_z_index()+2)
+        for i in [0, 2]:
+            dim_tekst_vek[i].set_color(c["vektor"])
+        srec = get_background_rect(dim_tekst_vek)
+        self.play(
+            FadeIn(srec),
+            Write(dim_tekst_vek),
+            run_time=0.5
+        )
+        self.slide_pause()
 
 
     def _om_vektorer(self):

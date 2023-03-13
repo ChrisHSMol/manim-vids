@@ -1,0 +1,12 @@
+# This file is used internally by FFMPEG.
+file 'file:G:/Mit drev/Colab Notebooks/manim-vids/media/videos/polynomier_og_rødder/480p15/partial_movie_files/Polynomier/3539995710_645682970_631829896.mp4'
+file 'file:G:/Mit drev/Colab Notebooks/manim-vids/media/videos/polynomier_og_rødder/480p15/partial_movie_files/Polynomier/3539995710_1771715268_4174018169.mp4'
+file 'file:G:/Mit drev/Colab Notebooks/manim-vids/media/videos/polynomier_og_rødder/480p15/partial_movie_files/Polynomier/649888707_2526496290_1615190830.mp4'
+file 'file:G:/Mit drev/Colab Notebooks/manim-vids/media/videos/polynomier_og_rødder/480p15/partial_movie_files/Polynomier/649888707_403138050_3105966079.mp4'
+file 'file:G:/Mit drev/Colab Notebooks/manim-vids/media/videos/polynomier_og_rødder/480p15/partial_movie_files/Polynomier/649888707_190800790_227534204.mp4'
+file 'file:G:/Mit drev/Colab Notebooks/manim-vids/media/videos/polynomier_og_rødder/480p15/partial_movie_files/Polynomier/649888707_4243379285_3132627632.mp4'
+file 'file:G:/Mit drev/Colab Notebooks/manim-vids/media/videos/polynomier_og_rødder/480p15/partial_movie_files/Polynomier/649888707_345352296_3561909618.mp4'
+file 'file:G:/Mit drev/Colab Notebooks/manim-vids/media/videos/polynomier_og_rødder/480p15/partial_movie_files/Polynomier/649888707_4137585362_1837013371.mp4'
+file 'file:G:/Mit drev/Colab Notebooks/manim-vids/media/videos/polynomier_og_rødder/480p15/partial_movie_files/Polynomier/649888707_345352296_3272579150.mp4'
+file 'file:G:/Mit drev/Colab Notebooks/manim-vids/media/videos/polynomier_og_rødder/480p15/partial_movie_files/Polynomier/649888707_1651510224_795405447.mp4'
+file 'file:G:/Mit drev/Colab Notebooks/manim-vids/media/videos/polynomier_og_rødder/480p15/partial_movie_files/Polynomier/649888707_3073779459_884903624.mp4'
