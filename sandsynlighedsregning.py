@@ -1,11 +1,245 @@
 from manim import *
 from helpers import *
 import numpy as np
-import math
+import subprocess
 
 slides = False
 if slides:
     from manim_slides import Slide
+
+quality = "high"
+
+
+class FairDie(Slide if slides else MovingCameraScene):
+    def construct(self):
+        self.terning()
+        self.slide_pause(5)
+
+    def slide_pause(self, t=1.0, slides_bool=slides):
+        return slides_pause(self, t, slides_bool)
+
+    def get_graph_rects(self, plane, results, bar_sep=0.25, height_sep=0.01):
+        offsets = np.zeros(6)
+        graph_rects = VGroup()
+        rect_labels = VGroup()
+        for res in results:
+            rect = Rectangle(
+                height=plane.c2p(0, 1-height_sep)[1] - plane.c2p(0, 0)[1],
+                width=plane.c2p(1-0.5*bar_sep, 0)[0] - plane.c2p(0, 0)[0]
+            ).set_style(
+                fill_opacity=1,
+                stroke_width=0.1,
+                fill_color=BLUE_C
+            ).move_to(plane.c2p(res, 0.5 + offsets[res-1] - 0.5*height_sep))
+            offsets[res-1] += 1
+            label = DecimalNumber(offsets[res-1], num_decimal_places=0).scale(0.5).next_to(rect, UP)
+            graph_rects.add(rect)
+            rect_labels.add(label)
+        return graph_rects, rect_labels
+
+    def get_axhlines(self, plane):
+        axhlines = VGroup()
+        xmax = plane.axes[0].get_tick_range()[-1]
+        for tick in plane.axes[1].get_tick_range():
+            axhlines.add(
+                DashedLine(
+                    start=plane.c2p(0, tick),
+                    end=plane.c2p(xmax, tick),
+                    stroke_width=0.25
+                )
+            )
+        return axhlines
+
+    def terning(self):
+        np.random.seed(14)
+        cmap = {
+            "ærlig": PINK
+        }
+        opener = Tex("Hvad er en ", "ærlig", " terning?").set_color_by_tex_to_color_map(cmap)
+        self.play(
+            Write(opener),
+            run_time=0.5
+        )
+        self.slide_pause()
+        self.play(
+            opener.animate.to_edge(UL)
+        )
+        self.slide_pause()
+
+        dice = VGroup(*[DieFace(n + 1) for n in range(6)]).arrange(RIGHT).shift(2*RIGHT)
+        self.play(
+            LaggedStart(
+                *[
+                    DrawBorderThenFill(die) for die in dice
+                ],
+                lag_ratio=0.2
+            ),
+            run_time=1
+        )
+        self.slide_pause()
+
+        nums_rolls = [10, 60, 60, 60, 600]
+        planes = VGroup(*[
+            Axes(
+                x_range=[0, 7, 1],
+                y_range=[0, num_rolls * 0.4, max(min(num_rolls // 15, num_rolls // 20), num_rolls // 10)],
+                x_length=8,
+                y_length=12,
+                tips=False
+            ).add_coordinates().scale(0.4).to_edge(DL) for num_rolls in nums_rolls
+        ])
+        axs_hlines = VGroup(*[
+            self.get_axhlines(plane) for plane in planes
+        ])
+
+        for iexp, plane, num_rolls, ax_hlines in zip(range(len(nums_rolls)), planes, nums_rolls, axs_hlines):
+            results = np.random.randint(low=1, high=7, size=num_rolls)
+            rolls = VGroup(*[
+                DieFace(num, fill_color=YELLOW).move_to(dice[num-1]) for num in results
+            ])
+            graph_rects, rect_labels = self.get_graph_rects(plane, results)
+
+            if iexp == 0:
+                self.play(
+                    DrawBorderThenFill(plane),
+                    Create(ax_hlines)
+                )
+                self.slide_pause()
+            else:
+                self.play(
+                    # FadeOut(VGroup(planes[iexp-1], axs_hlines[iexp-1])),
+                    FadeIn(VGroup(plane, ax_hlines)),
+                    run_time=1
+                )
+
+            for i, die, graph_rect in zip(range(num_rolls), rolls, graph_rects):
+                if iexp + i > 0:
+                    self.remove(tekst)
+                tekst = Tex(f"Antal slag med terning: {i+1}").scale(0.5).next_to(plane, UP, aligned_edge=LEFT)
+                if iexp + i == 0:
+                    self.play(Write(tekst), run_time=0.5)
+                else:
+                    self.add(tekst)
+                self.add(die)
+                if i <= 10:
+                    self.play(
+                        TransformFromCopy(die, graph_rect),
+                        run_time=1 if i <= 5 and iexp <= 1 else 0.5
+                    )
+                else:
+                    self.add(graph_rect)
+                    self.wait(1/15 if quality == "low" else 1/60)
+                self.remove(die)
+
+            self.slide_pause()
+            summa = [len([i for i in results if i == n]) for n in [1, 2, 3, 4, 5, 6]]
+            print(summa)
+            sumtekst = VGroup(*[
+                MathTex(
+                    f"{s}\\over{sum(summa)}", color=RED, font_size=20
+                ).move_to(
+                    plane.c2p(i+1, plane.axes[1].get_tick_range()[-1]*0.85)
+                ) for i, s in enumerate(summa)
+            ])
+            self.play(
+                Write(sumtekst),
+                run_time=0.5
+            )
+            self.slide_pause()
+            sumpct = VGroup(*[
+                MathTex(
+                    f"{s/sum(summa)*100:.2f} \\%", color=RED, font_size=32
+                ).next_to(die, DOWN) for s, die in zip(summa, dice)
+            ])
+            self.play(
+                LaggedStart(
+                    *[
+                        TransformFromCopy(frac, pct) for frac, pct in zip(sumtekst, sumpct)
+                    ],
+                    lag_ratio=0.1
+                ),
+                run_time=2
+            )
+            self.slide_pause()
+            self.play(FadeOut(graph_rects, plane, ax_hlines, sumtekst, sumpct), run_time=0.25)
+        self.play(FadeOut(tekst))
+
+        scene_marker("6 MILLIONER TERNINGER")
+        tekst = Tex("Nu simulerer vi 6 mio. slag med en terning", font_size=30).next_to(dice, UP)
+        plane = Axes(
+            x_range=[0, 6.9, 1],
+            y_range=[0, 3E6 * 0.4, max(min(3E6 // 15, 3E6 // 20), 3E6 // 10)],
+            x_length=8,
+            y_length=12,
+            tips=False
+        ).add_coordinates().scale(0.4).to_edge(DL)
+        ax_hlines = self.get_axhlines(plane)
+        results = np.random.randint(low=1, high=7, size=6_000_000)
+        summa = [len([i for i in results if i == n]) for n in [1, 2, 3, 4, 5, 6]]
+        sumtekst = VGroup(*[
+            MathTex(
+                f"{s}\\over{sum(summa)}", color=RED, font_size=4
+            ).move_to(
+                plane.c2p(i+1, plane.axes[1].get_tick_range()[-1]*0.85)
+            ) for i, s in enumerate(summa)
+        ])
+        sumpct = VGroup(*[
+            MathTex(
+                f"{s/sum(summa)*100:.3f} \\%", color=RED, font_size=28
+            ).next_to(die, DOWN) for s, die in zip(summa, dice)
+        ])
+        print(summa)
+
+        graph_rects = VGroup(*[
+            Rectangle(
+                height=plane.c2p(0, res)[1] - plane.c2p(0, 0)[1],
+                width=plane.c2p(0.875, 0)[0] - plane.c2p(0, 0)[0]
+            ).set_style(
+                fill_opacity=1,
+                stroke_width=0.1,
+                fill_color=BLUE_C
+            ).move_to(plane.c2p(i + 1, 0.5 * res)) for i, res in enumerate(summa)
+        ])
+        self.play(
+            DrawBorderThenFill(plane, ax_hlines),
+            Write(tekst),
+            run_time=0.5
+        )
+        self.slide_pause()
+        self.play(
+            FadeIn(graph_rects),
+            LaggedStart(
+                Write(sumtekst),
+                LaggedStart(
+                    *[
+                        TransformFromCopy(frac, pct) for frac, pct in zip(sumtekst, sumpct)
+                    ],
+                    lag_ratio=0.4
+                ),
+                lag_ratio=0.5
+            ),
+            run_time=2
+        )
+        self.slide_pause()
+
+        self.camera.frame.save_state()
+        self.play(
+            self.camera.frame.animate.set(
+                width=1
+            ).move_to(plane.c2p(1.5, np.mean(summa))),
+            run_time=4
+        )
+        self.slide_pause()
+        self.play(
+            self.camera.frame.animate.move_to(plane.c2p(5.5, np.mean(summa))),
+            run_time=10
+        )
+        self.slide_pause()
+        self.play(
+            Restore(self.camera.frame),
+            run_time=4
+        )
+
 
 
 class MultiOgAddiPrincip(Slide if slides else MovingCameraScene):
@@ -179,3 +413,5 @@ class MultiOgAddiPrincip(Slide if slides else MovingCameraScene):
             run_time=3
         )
 
+
+# subprocess.call([r"manim .\sandsynlighedsregning.py FairDie -pql"])

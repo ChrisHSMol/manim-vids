@@ -208,6 +208,50 @@ def get_background_rect(mobject, buff=0.5, stroke_colour=None):
     ).set_z_index(mobject.get_z_index()-1)
 
 
+class DieFace(VGroup):
+    def __init__(self,
+                 value,
+                 side_length=1.0,
+                 corner_radius=0.15,
+                 stroke_color=WHITE,
+                 stroke_width=2.0,
+                 fill_color=BLUE_C,
+                 dot_radius=0.08,
+                 dot_color=GREY_E,
+                 dot_coalesce_factor=0.5):
+        dot = Dot(radius=dot_radius, fill_color=dot_color)
+        square = Square(
+            side_length=side_length,
+            stroke_color=stroke_color,
+            stroke_width=stroke_width,
+            fill_color=fill_color,
+            fill_opacity=1.0,
+        )
+        square.round_corners(corner_radius)
+
+        if not (1 <= value <= 6):
+            raise Exception("DieFace only accepts integer inputs between 1 and 6")
+
+        edge_group = [
+            (ORIGIN,),
+            (UL, DR),
+            (UL, ORIGIN, DR),
+            (UL, UR, DL, DR),
+            (UL, UR, ORIGIN, DL, DR),
+            (UL, UR, LEFT, RIGHT, DL, DR),
+        ][value - 1]
+
+        arrangement = VGroup(*(
+            # dot.copy().move_to(square.get_bounding_box_point(vect))
+            dot.copy().move_to(0.5*side_length * vect)
+            for vect in edge_group
+        ))
+        arrangement.space_out_submobjects(dot_coalesce_factor)
+
+        super().__init__(square, arrangement)
+        self.value = value
+        self.index = value
+
 def keyword_overlay(self):
     srec = ScreenRectangle(height=10, stroke_width=0, fill_color=BLACK, fill_opacity=0.5)
     self.play(FadeIn(srec), run_time=0.5)
