@@ -3,7 +3,7 @@ from helpers import *
 import numpy as np
 import subprocess
 
-slides = False
+slides = True
 if slides:
     from manim_slides import Slide
 
@@ -15,7 +15,7 @@ cmap = {
 }
 
 
-class FairDie(Slide if slides else MovingCameraScene):
+class FairDie(Slide, MovingCameraScene if slides else MovingCameraScene):
     def construct(self):
         self.fair_terning()
         self.slide_pause()

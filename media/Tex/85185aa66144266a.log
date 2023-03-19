@@ -1,10 +1,15 @@
+<<<<<<< HEAD
 This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 22.10) (preloaded format=latex 2022.12.19)  18 MAR 2023 12:36
+=======
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 22.10) (preloaded format=latex 2022.11.8)  19 MAR 2023 12:15
+>>>>>>> b5add05c9f55d8ec1532904e34d10e8aa7e49893
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **./media/Tex/85185aa66144266a.tex
 (media/Tex/85185aa66144266a.tex
 LaTeX2e <2022-06-01> patch level 5
+<<<<<<< HEAD
 L3 programming layer <2022-09-28>
 (C:\Users\chris\AppData\Local\Programs\MiKTeX\tex/latex/standalone\standalone.c
 ls
@@ -24,12 +29,46 @@ C:\Users\chris\AppData\Local\Programs\MiKTeX\tex/generic/xkeyval\xkvutils.tex
 \XKV@toks=\toks16
 \XKV@tempa@toks=\toks17
 (C:\Users\chris\AppData\Local\Programs\MiKTeX\tex/generic/xkeyval\keyval.tex))
+=======
+L3 programming layer <2022-10-26>
+(C:\Users\KG-chri12mz\AppData\Local\Programs\MiKTeX\tex/latex/standalone\standa
+lone.cls
+Document Class: standalone 2022/10/10 v1.3b Class to compile TeX sub-files stan
+dalone
+
+(C:\Users\KG-chri12mz\AppData\Local\Programs\MiKTeX\tex/latex/tools\shellesc.st
+y
+Package: shellesc 2019/11/08 v1.0c unified shell escape interface for LaTeX
+Package shellesc Info: Restricted shell escape enabled on input line 77.
+)
+(C:\Users\KG-chri12mz\AppData\Local\Programs\MiKTeX\tex/generic/iftex\ifluatex.
+sty
+Package: ifluatex 2019/10/25 v1.5 ifluatex legacy package. Use iftex instead.
+
+(C:\Users\KG-chri12mz\AppData\Local\Programs\MiKTeX\tex/generic/iftex\iftex.sty
+Package: iftex 2022/02/03 v1.0f TeX engine tests
+))
+(C:\Users\KG-chri12mz\AppData\Local\Programs\MiKTeX\tex/latex/xkeyval\xkeyval.s
+ty
+Package: xkeyval 2022/06/16 v2.9 package option processing (HA)
+
+(C:\Users\KG-chri12mz\AppData\Local\Programs\MiKTeX\tex/generic/xkeyval\xkeyval
+.tex
+(C:\Users\KG-chri12mz\AppData\Local\Programs\MiKTeX\tex/generic/xkeyval\xkvutil
+s.tex
+\XKV@toks=\toks16
+\XKV@tempa@toks=\toks17
+
+(C:\Users\KG-chri12mz\AppData\Local\Programs\MiKTeX\tex/generic/xkeyval\keyval.
+tex))
+>>>>>>> b5add05c9f55d8ec1532904e34d10e8aa7e49893
 \XKV@depth=\count185
 File: xkeyval.tex 2014/12/03 v2.7a key=value parser (HA)
 ))
 \sa@internal=\count186
 \c@sapage=\count187
 
+<<<<<<< HEAD
 (C:\Users\chris\AppData\Local\Programs\MiKTeX\tex/latex/standalone\standalone.c
 fg
 File: standalone.cfg 2018/03/26 v1.3a Default configuration file for 'standalon
@@ -37,6 +76,16 @@ e' class
 ) (C:\Users\chris\AppData\Local\Programs\MiKTeX\tex/latex/base\article.cls
 Document Class: article 2021/10/04 v1.4n Standard LaTeX document class
 (C:\Users\chris\AppData\Local\Programs\MiKTeX\tex/latex/base\size10.clo
+=======
+(C:\Users\KG-chri12mz\AppData\Local\Programs\MiKTeX\tex/latex/standalone\standa
+lone.cfg
+File: standalone.cfg 2022/10/10 v1.3b Default configuration file for 'standalon
+e' class
+) (C:\Users\KG-chri12mz\AppData\Local\Programs\MiKTeX\tex/latex/base\article.cl
+s
+Document Class: article 2021/10/04 v1.4n Standard LaTeX document class
+(C:\Users\KG-chri12mz\AppData\Local\Programs\MiKTeX\tex/latex/base\size10.clo
+>>>>>>> b5add05c9f55d8ec1532904e34d10e8aa7e49893
 File: size10.clo 2021/10/04 v1.4n Standard LaTeX file (size option)
 )
 \c@part=\count188
@@ -50,34 +99,70 @@ File: size10.clo 2021/10/04 v1.4n Standard LaTeX file (size option)
 \abovecaptionskip=\skip47
 \belowcaptionskip=\skip48
 \bibindent=\dimen138
+<<<<<<< HEAD
 ) (C:\Users\chris\AppData\Local\Programs\MiKTeX\tex/latex/preview\preview.sty
 Package: preview 2017/04/24 13.1 (AUCTeX/preview-latex)
 (C:\Users\chris\AppData\Local\Programs\MiKTeX\tex/latex/luatex85\luatex85.sty
 Package: luatex85 2016/06/15 v1.4 pdftex aliases for luatex
 )
 (C:\Users\chris\AppData\Local\Programs\MiKTeX\tex/latex/preview\prtightpage.def
+=======
+)
+(C:\Users\KG-chri12mz\AppData\Local\Programs\MiKTeX\tex/latex/preview\preview.s
+ty
+Package: preview 2017/04/24 13.1 (AUCTeX/preview-latex)
+
+(C:\Users\KG-chri12mz\AppData\Local\Programs\MiKTeX\tex/latex/luatex85\luatex85
+.sty
+Package: luatex85 2016/06/15 v1.4 pdftex aliases for luatex
+)
+(C:\Users\KG-chri12mz\AppData\Local\Programs\MiKTeX\tex/latex/preview\prtightpa
+ge.def
+>>>>>>> b5add05c9f55d8ec1532904e34d10e8aa7e49893
 \PreviewBorder=\dimen139
 )
 \pr@snippet=\count196
 \pr@box=\box51
 \pr@output=\toks18
+<<<<<<< HEAD
 )) (C:\Users\chris\AppData\Local\Programs\MiKTeX\tex/generic/babel\babel.sty
 Package: babel 2022/10/04 3.81 The Babel package
 \babel@savecnt=\count197
 \U@D=\dimen140
 \l@unhyphenated=\language79
 (C:\Users\chris\AppData\Local\Programs\MiKTeX\tex/generic/babel\txtbabel.def)
+=======
+))
+(C:\Users\KG-chri12mz\AppData\Local\Programs\MiKTeX\tex/generic/babel\babel.sty
+Package: babel 2022/10/23 3.82 The Babel package
+\babel@savecnt=\count197
+\U@D=\dimen140
+\l@unhyphenated=\language79
+
+(C:\Users\KG-chri12mz\AppData\Local\Programs\MiKTeX\tex/generic/babel\txtbabel.
+def)
+>>>>>>> b5add05c9f55d8ec1532904e34d10e8aa7e49893
 \bbl@readstream=\read2
 \bbl@dirlevel=\count198
 *************************************
 * Local config file bblopts.cfg used
 *
+<<<<<<< HEAD
 (C:\Users\chris\AppData\Local\Programs\MiKTeX\tex/latex/arabi\bblopts.cfg
 File: bblopts.cfg 2005/09/08 v0.1 add Arabic and Farsi to "declared" options of
  babel
 )
 (C:\Users\chris\AppData\Local\Programs\MiKTeX\tex/latex/babel-english\english.l
 df
+=======
+
+(C:\Users\KG-chri12mz\AppData\Local\Programs\MiKTeX\tex/latex/arabi\bblopts.cfg
+File: bblopts.cfg 2005/09/08 v0.1 add Arabic and Farsi to "declared" options of
+ babel
+)
+(C:\Users\KG-chri12mz\AppData\Local\Programs\MiKTeX\tex/latex/babel-english\eng
+lish.ldf
+>>>>>>> b5add05c9f55d8ec1532904e34d10e8aa7e49893
 Language: english 2017/06/06 v3.3r English support from the babel system
 Package babel Info: Hyphen rules for 'canadian' set to \l@english
 (babel)             (\language0). Reported on input line 102.
@@ -86,6 +171,7 @@ Package babel Info: Hyphen rules for 'australian' set to \l@ukenglish
 Package babel Info: Hyphen rules for 'newzealand' set to \l@ukenglish
 (babel)             (\language73). Reported on input line 108.
 ))
+<<<<<<< HEAD
 (C:\Users\chris\AppData\Local\Programs\MiKTeX\tex/generic/babel/locale/en\babel
 -english.tex
 Package babel Info: Importing font and identification data for english
@@ -104,6 +190,36 @@ File: amsgen.sty 1999/11/30 v2.0 generic functions
 Package: amsbsy 1999/11/29 v1.2d Bold Symbols
 \pmbraise@=\dimen142
 ) (C:\Users\chris\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsopn.sty
+=======
+(C:\Users\KG-chri12mz\AppData\Local\Programs\MiKTeX\tex/generic/babel/locale/en
+\babel-english.tex
+Package babel Info: Importing font and identification data for english
+(babel)             from babel-en.ini. Reported on input line 11.
+)
+(C:\Users\KG-chri12mz\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsmath.s
+ty
+Package: amsmath 2022/04/08 v2.17n AMS math features
+\@mathmargin=\skip49
+For additional information on amsmath, use the `?' option.
+
+(C:\Users\KG-chri12mz\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amstext.s
+ty
+Package: amstext 2021/08/26 v2.01 AMS text
+
+(C:\Users\KG-chri12mz\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsgen.st
+y
+File: amsgen.sty 1999/11/30 v2.0 generic functions
+\@emptytoks=\toks19
+\ex@=\dimen141
+))
+(C:\Users\KG-chri12mz\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsbsy.st
+y
+Package: amsbsy 1999/11/29 v1.2d Bold Symbols
+\pmbraise@=\dimen142
+)
+(C:\Users\KG-chri12mz\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsopn.st
+y
+>>>>>>> b5add05c9f55d8ec1532904e34d10e8aa7e49893
 Package: amsopn 2022/04/08 v2.04 operator names
 )
 \inf@bad=\count199
@@ -153,9 +269,19 @@ LaTeX Info: Redefining \Relbar on input line 971.
 \mathdisplay@stack=\toks23
 LaTeX Info: Redefining \[ on input line 2953.
 LaTeX Info: Redefining \] on input line 2954.
+<<<<<<< HEAD
 ) (C:\Users\chris\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amssymb.sty
 Package: amssymb 2013/01/14 v3.01 AMS font symbols
 (C:\Users\chris\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amsfonts.sty
+=======
+)
+(C:\Users\KG-chri12mz\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amssymb.
+sty
+Package: amssymb 2013/01/14 v3.01 AMS font symbols
+
+(C:\Users\KG-chri12mz\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amsfonts
+.sty
+>>>>>>> b5add05c9f55d8ec1532904e34d10e8aa7e49893
 Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
 \symAMSa=\mathgroup4
 \symAMSb=\mathgroup5
@@ -163,9 +289,15 @@ LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
 LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 (Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
 ))
+<<<<<<< HEAD
 (C:\Users\chris\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-dvi
 ps.def
 File: l3backend-dvips.def 2022-09-28 L3 backend support: dvips
+=======
+(C:\Users\KG-chri12mz\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backe
+nd-dvips.def
+File: l3backend-dvips.def 2022-10-26 L3 backend support: dvips
+>>>>>>> b5add05c9f55d8ec1532904e34d10e8aa7e49893
 \l__pdf_internal_box=\box54
 \g__pdf_backend_object_int=\count277
 \l__pdf_backend_content_box=\box55
@@ -193,11 +325,19 @@ LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 7.
 LaTeX Font Info:    ... okay on input line 7.
 Preview: Fontsize 10pt
 LaTeX Font Info:    Trying to load font information for U+msa on input line 9.
+<<<<<<< HEAD
 (C:\Users\chris\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
 LaTeX Font Info:    Trying to load font information for U+msb on input line 9.
 (C:\Users\chris\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
+=======
+(C:\Users\KG-chri12mz\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Trying to load font information for U+msb on input line 9.
+(C:\Users\KG-chri12mz\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
+>>>>>>> b5add05c9f55d8ec1532904e34d10e8aa7e49893
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 
@@ -206,15 +346,31 @@ Package amsmath Warning: Foreign command \over;
 (amsmath)                 on input line 11.
 
 Preview: Tightpage 0 0 0 0
+<<<<<<< HEAD
 [1] (G:\Mit drev\Colab Notebooks\manim-vids\media\Tex\85185aa66144266a.aux) ) 
 Here is how much of TeX's memory you used:
  3438 strings out of 475386
  57577 string characters out of 2776932
  407623 words of memory out of 3000000
  24804 multiletter control sequences out of 15000+600000
+=======
+[1]
+(C:\Users\KG-chri12mz\PycharmProjects\KG\manim-vids\manim-vids\media\Tex\85185a
+a66144266a.aux) ) 
+Here is how much of TeX's memory you used:
+ 3440 strings out of 475381
+ 58132 string characters out of 2773966
+ 407888 words of memory out of 3000000
+ 24811 multiletter control sequences out of 15000+600000
+>>>>>>> b5add05c9f55d8ec1532904e34d10e8aa7e49893
  470958 words of font info for 36 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  55i,9n,71p,244b,157s stack positions out of 10000i,1000n,20000p,200000b,80000s
 
+<<<<<<< HEAD
 Output written on "G:\Mit drev\Colab Notebooks\manim-vids\media\Tex\85185aa6614
 4266a.dvi" (1 page, 1660 bytes).
+=======
+Output written on C:\Users\KG-chri12mz\PycharmProjects\KG\manim-vids\manim-vids
+\media\Tex\85185aa66144266a.dvi (1 page, 1660 bytes).
+>>>>>>> b5add05c9f55d8ec1532904e34d10e8aa7e49893
