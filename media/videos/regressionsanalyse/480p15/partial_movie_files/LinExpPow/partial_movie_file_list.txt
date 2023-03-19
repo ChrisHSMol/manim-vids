@@ -1,0 +1,7 @@
+# This file is used internally by FFMPEG.
+file 'file:G:/Mit drev/Colab Notebooks/manim-vids/media/videos/regressionsanalyse/480p15/partial_movie_files/LinExpPow/3539995710_2066925999_2358810818.mp4'
+file 'file:G:/Mit drev/Colab Notebooks/manim-vids/media/videos/regressionsanalyse/480p15/partial_movie_files/LinExpPow/649888707_798121196_3240054874.mp4'
+file 'file:G:/Mit drev/Colab Notebooks/manim-vids/media/videos/regressionsanalyse/480p15/partial_movie_files/LinExpPow/649888707_3315967912_3372747400.mp4'
+file 'file:G:/Mit drev/Colab Notebooks/manim-vids/media/videos/regressionsanalyse/480p15/partial_movie_files/LinExpPow/649888707_2226269268_2932718564.mp4'
+file 'file:G:/Mit drev/Colab Notebooks/manim-vids/media/videos/regressionsanalyse/480p15/partial_movie_files/LinExpPow/649888707_3315967912_3099498054.mp4'
+file 'file:G:/Mit drev/Colab Notebooks/manim-vids/media/videos/regressionsanalyse/480p15/partial_movie_files/LinExpPow/649888707_2292429055_184946772.mp4'

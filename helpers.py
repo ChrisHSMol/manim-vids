@@ -196,12 +196,12 @@ def between_mobjects(left_mob, right_mob):
     return 0.5*(right_mob.get_edge_center(LEFT) + left_mob.get_edge_center(RIGHT))
 
 
-def get_background_rect(mobject, buff=0.5, stroke_colour=None, stroke_width=1):
+def get_background_rect(mobject, buff=0.5, stroke_colour=None, stroke_width=1, fill_opacity=0.85):
     return Rectangle(
         width=mobject.width + buff,
         height=mobject.height + buff
     ).move_to(mobject).set_style(
-        fill_opacity=0.85,
+        fill_opacity=fill_opacity,
         stroke_width=0 if stroke_colour is None else stroke_width,
         fill_color=BLACK,
         stroke_color=stroke_colour
