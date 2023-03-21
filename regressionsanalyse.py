@@ -8,7 +8,7 @@ from scipy.optimize import curve_fit
 #     slides = True
 # except:
 #     slides = False
-slides = False
+slides = True
 if slides:
     from manim_slides import Slide
 
@@ -93,7 +93,7 @@ class LinExpPow(MovingCameraScene, Slide if slides else Scene):
             bpow.get_value()*xs**apow.get_value()
         ])
 
-        for yvals, label in zip(ys, ["lin", "exp", "pow"]):
+        for yvals, label, ieq in zip(ys, ["lin", "exp", "pow"], range(len(planes))):
             dots = VGroup(*[
                 VGroup(*[
                     Dot(
@@ -117,28 +117,42 @@ class LinExpPow(MovingCameraScene, Slide if slides else Scene):
             regressions = np.array([
                 np.polyfit(xs, yvals, 1),
                 np.exp(np.polyfit(xs, np.log(yvals), 1)),
-                curve_fit(f=potensfunktion, xdata=xs, ydata=yvals, bounds=xlim)[0]
+                # curve_fit(f=potensfunktion, xdata=xs, ydata=yvals)[0]
+                [apow.get_value(), bpow.get_value()]
             ])
-            print(regressions)
-            print(apow.get_value(), bpow.get_value(), regressions[2])
             graphs = VGroup(
                 planes[0].plot(
                     lambda x: regressions[0, 0] * x + regressions[0, 1],
-                    x_range=xlim
-                ),
+                    x_range=xlim,
+                    color=cmap["lin"]
+                ).set_z_index(2),
                 planes[1].plot(
                     lambda x: regressions[1, 1] * regressions[1, 0]**x,
-                    x_range=xlim
-                ),
+                    x_range=xlim,
+                    color=cmap["exp"]
+                ).set_z_index(2),
                 planes[2].plot(
-                    lambda x: regressions[2, 1] * x**regressions[2, 0],
-                    x_range=xlim
-                )
+                    # lambda x: regressions[2, 1] * x**regressions[2, 0],
+                    lambda x: potensfunktion(x, *regressions[2]),
+                    x_range=xlim,
+                    color=cmap["pow"]
+                ).set_z_index(2)
             )
             self.play(
-                Create(graphs)
+                Create(graphs),
+                run_time=2
             )
+            self.slide_pause()
+            self.play(
+                Circumscribe(
+                    VGroup(planes[ieq], plane_rects[ieq], plane_labels[ieq]),
+                    fade_out=True
+                ),
+                run_time=2
+            )
+            self.slide_pause()
 
             self.play(
-                FadeOut(dots)
+                FadeOut(dots),
+                FadeOut(graphs)
             )

@@ -1,0 +1,12 @@
+# This file is used internally by FFMPEG.
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/polynomier/480p15/partial_movie_files/Polynomier/2413584713_3463169274_670159217.mp4'
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/polynomier/480p15/partial_movie_files/Polynomier/1766566432_329969645_3746082972.mp4'
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/polynomier/480p15/partial_movie_files/Polynomier/1766566432_2650545309_1061074603.mp4'
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/polynomier/480p15/partial_movie_files/Polynomier/1766566432_329969645_2441045143.mp4'
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/polynomier/480p15/partial_movie_files/Polynomier/1766566432_1844874869_2821267850.mp4'
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/polynomier/480p15/partial_movie_files/Polynomier/1766566432_329969645_1010922624.mp4'
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/polynomier/480p15/partial_movie_files/Polynomier/1766566432_976332814_4087256297.mp4'
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/polynomier/480p15/partial_movie_files/Polynomier/1766566432_329969645_4220194327.mp4'
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/polynomier/480p15/partial_movie_files/Polynomier/1766566432_3544610292_1214675993.mp4'
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/polynomier/480p15/partial_movie_files/Polynomier/1766566432_329969645_3881543406.mp4'
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/polynomier/480p15/partial_movie_files/Polynomier/1766566432_36632488_2034507520.mp4'
