@@ -137,20 +137,20 @@ class Polynomier(Slide if slides else MovingCameraScene):
         }
         polynomier = VGroup(
             MathTex(
-                "y_0", " = ", "a_0",
+                "f_0(", "x", ")", " = ", "a_0",
             ),
             MathTex(
-                "y_1", " = ", "a_0", " + ", "a_1", r"\cdot", "x",
+                "f_1(", "x", ")", " = ", "a_0", " + ", "a_1", r"\cdot", "x",
             ),
             MathTex(
-                "y_2", " = ", "a_0", " + ", "a_1", r"\cdot", "x", " + ", "a_2", r"\cdot", "x", "^2",
+                "f_2(", "x", ")", " = ", "a_0", " + ", "a_1", r"\cdot", "x", " + ", "a_2", r"\cdot", "x", "^2",
             ),
             MathTex(
-                "y_3", " = ", "a_0" " + ", "a_1", r"\cdot", "x", " + ",
+                "f_3(", "x", ")", " = ", "a_0" " + ", "a_1", r"\cdot", "x", " + ",
                 "a_2", r"\cdot", "x", "^2", " + ", "a_3", r"\cdot", "x", "^3",
             ),
             MathTex(
-                "y_4", " = ", "a_0", " + ", "a_1", r"\cdot", "x", " + ", "a_2", r"\cdot", "x", "^2", " + ",
+                "f_4(", "x", ")", " = ", "a_0", " + ", "a_1", r"\cdot", "x", " + ", "a_2", r"\cdot", "x", "^2", " + ",
                 "a_3", r"\cdot", "x", "^3", " + ", "a_4", r"\cdot", "x", "^4",
             )
         ).arrange(DOWN, aligned_edge=LEFT).to_edge(RIGHT)
@@ -207,14 +207,14 @@ class Polynomier(Slide if slides else MovingCameraScene):
 
         ex_pol = VGroup(
             VGroup(
-                MathTex(r"y = 2 \cdot x - 4").set_color(YELLOW_B),
-                MathTex(r"y = -4 \cdot x + 2").set_color(YELLOW_C),
-                MathTex(r"y = x^2 + 2 \cdot x - 1").set_color(YELLOW_D)
+                MathTex(r"f(x) = 2 \cdot x - 4").set_color(YELLOW_B),
+                MathTex(r"f(x) = -4 \cdot x + 2").set_color(YELLOW_C),
+                MathTex(r"f(x) = x^2 + 2 \cdot x - 1").set_color(YELLOW_D)
             ).arrange(DOWN, aligned_edge=LEFT, buff=1.5),
             VGroup(
-                MathTex(r"y = x^6 + 2 \cdot x^4 - x^3 + 2 \cdot x").set_color(BLUE_B),
-                MathTex(r"y = x^3 - 5 \cdot x^4 + x - 1").set_color(BLUE_C),
-                MathTex(r"y = x + 2\cdot x - 30 \cdot x^3 + x^{25}").set_color(BLUE_D)
+                MathTex(r"f(x) = x^6 + 2 \cdot x^4 - x^3 + 2 \cdot x").set_color(BLUE_B),
+                MathTex(r"f(x) = x^3 - 5 \cdot x^4 + x - 1").set_color(BLUE_C),
+                MathTex(r"f(x) = x + 2\cdot x - 30 \cdot x^3 + x^{25}").set_color(BLUE_D)
             ).arrange(DOWN, aligned_edge=LEFT, buff=1.5)
         ).arrange(RIGHT, aligned_edge=DOWN, buff=1)
 
@@ -284,8 +284,6 @@ class Polynomier(Slide if slides else MovingCameraScene):
             run_time=0.5
         )
         self.slide_pause()
-
-
 
     def andengrad(self):
         a = ValueTracker(0)
