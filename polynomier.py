@@ -2,7 +2,7 @@ from manim import *
 from helpers import *
 import numpy as np
 
-slides = False
+slides = True
 if slides:
     from manim_slides import Slide
 
@@ -66,7 +66,8 @@ class Polynomier(Slide if slides else MovingCameraScene):
         return str_ind
 
     def etymologi(self):
-        play_latest = True
+        self.slide_pause()
+        play_latest = False
         open_quote = Tex(r"Kært ", "barn ", "har ", "mange ", "navne")
         if not play_latest:
             self.play(
@@ -83,8 +84,8 @@ class Polynomier(Slide if slides else MovingCameraScene):
                 Write(mit_navn),
                 run_time=2
             )
-            self.play(FadeOut(mit_navn), run_time=0.5)
             self.slide_pause()
+            self.play(FadeOut(mit_navn), run_time=0.5)
 
             self.play(
                 open_quote[-2].animate.set_color(YELLOW),

@@ -40,6 +40,7 @@ class LinExpPow(MovingCameraScene, Slide if slides else Scene):
         return slides_pause(self, t, slides_bool)
 
     def analyse(self):
+        self.slide_pause()
         np.random.seed(42)
         alin, blin = ValueTracker(0.75), ValueTracker(0.0)
         aexp, bexp = ValueTracker(1.40), ValueTracker(0.5)
