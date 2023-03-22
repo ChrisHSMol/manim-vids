@@ -1,0 +1,28 @@
+{
+  "slides": [
+    {
+      "type": "slide",
+      "start_animation": 0,
+      "end_animation": 3,
+      "number": 1,
+      "terminated": false
+    },
+    {
+      "type": "last",
+      "start_animation": 3,
+      "end_animation": 4,
+      "number": 2,
+      "terminated": false
+    }
+  ],
+  "files": [
+    "slides\\files\\PolyRod\\4266129954_3169724690_223132457.mp4",
+    "slides\\files\\PolyRod\\1442284246_1896079838_2536146115.mp4",
+    "slides\\files\\PolyRod\\1442284246_645682970_211219831.mp4",
+    "slides\\files\\PolyRod\\1442284246_3286508854_3942667339.mp4"
+  ],
+  "resolution": [
+    854,
+    480
+  ]
+}

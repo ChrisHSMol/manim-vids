@@ -2,7 +2,7 @@ from manim import *
 from helpers import *
 import numpy as np
 
-slides = True
+slides = False
 if slides:
     from manim_slides import Slide
 
@@ -345,3 +345,32 @@ class Polynomier(Slide if slides else MovingCameraScene):
             c.animate.set_value(0), run_time=1
         )
         self.slide_pause(3)
+
+
+class PolyRod(Slide if slides else MovingCameraScene):
+    def construct(self):
+        self.roots()
+        self.slide_pause(5)
+
+    def slide_pause(self, t=1.0, slides_bool=slides):
+        return slides_pause(self, t=t, slides_bool=slides_bool)
+
+    def roots(self):
+        cmap = {
+            "rod": YELLOW,
+            "rødder": YELLOW,
+            "nulpunkt": BLUE_B
+        }
+        opener = VGroup(
+            Tex("En rod er et nulpunkt for grafen."),
+            Tex("Et nulpunkt er, når y-værdien for grafen er 0.")
+        ).arrange(DOWN, aligned_edge=LEFT)
+        for line in opener:
+            line.set_color_by_tex_to_color_map(cmap)
+
+        self.play(
+            Write(opener),
+            run_time=1
+        )
+
+

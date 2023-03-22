@@ -1,0 +1,5 @@
+# This file is used internally by FFMPEG.
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/polynomier/480p15/partial_movie_files/PolyRod/4266129954_3169724690_223132457.mp4'
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/polynomier/480p15/partial_movie_files/PolyRod/1442284246_1896079838_2536146115.mp4'
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/polynomier/480p15/partial_movie_files/PolyRod/1442284246_645682970_211219831.mp4'
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/polynomier/480p15/partial_movie_files/PolyRod/1442284246_3286508854_3942667339.mp4'
