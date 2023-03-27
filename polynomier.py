@@ -374,3 +374,127 @@ class PolyRod(Slide if slides else MovingCameraScene):
         )
 
 
+class MonotoniForhold(Slide if slides else Scene):
+    def construct(self):
+        plane, graph = self.start_graph()
+        toppunkter, sub_graphs = self.toppunkter(plane, graph)
+        self.monotoni(plane, graph, toppunkter, sub_graphs)
+
+        self.slide_pause(5)
+
+    def slide_pause(self, t=1.0, slides_bool=slides):
+        return slides_pause(self, t=t, slides_bool=slides_bool)
+
+    def start_graph(self):
+        plane = NumberPlane(
+            x_range=(-5.5, 10.5, 1),
+            y_range=(-8.5, 9.5, 2),
+            x_length=width,
+            y_length=width / 16 * 9,
+            background_line_style={
+                "stroke_color": TEAL,
+                "stroke_width": 1.5,
+                "stroke_opacity": 0.3
+            },
+        )
+        graph = plane.plot(
+            lambda x: 0.2 * x ** 3 - 2 * x ** 2 + 3 * x + 5,
+            color=BLUE,
+            z_index=2
+        )
+        self.play(
+            LaggedStart(
+                DrawBorderThenFill(plane),
+                DrawBorderThenFill(graph),
+                lag_ratio=0.5
+            ),
+            run_time=2
+        )
+        self.slide_pause()
+        return plane, graph
+
+    def toppunkter(self, plane, graph):
+        toptekst = Tex("Toppunkter er der, hvor grafen skifter retning").scale(0.75).to_edge(UL).set_z_index(3)
+        toptekst[0][:10].set_color(YELLOW)
+        srec = get_background_rect(toptekst, buff=0.1)
+        self.play(
+            Write(toptekst),
+            FadeIn(srec),
+            run_time=0.5
+        )
+        self.slide_pause()
+
+        top_x = [0.8612671710, 5.805399496]
+        toppunkter = VGroup(*[
+            Dot(
+                plane.c2p(x, graph.underlying_function(x)),
+                radius=0.06,
+                color=YELLOW,
+                z_index=3
+            ) for x in top_x
+        ]).add(Dot(radius=0.00))
+        xlows = [-3, *top_x]
+        xhighs = [*top_x, 10]
+        sub_graphs = VGroup(*[
+            plane.plot(
+                lambda x: graph.underlying_function(x),
+                x_range=[xlow, xhigh],
+                color=YELLOW,
+                z_index=2
+            ) for xlow, xhigh in zip(xlows, xhighs)
+        ])
+        for sub_graph, toppunkt in zip(sub_graphs, toppunkter):
+            self.play(
+                LaggedStart(
+                    ShowPassingFlash(
+                        sub_graph,
+                        time_width=2,
+                        run_time=4
+                    ),
+                    DrawBorderThenFill(
+                        toppunkt,
+                        run_time=1
+                    ),
+                    lag_ratio=0.4
+                ),
+            )
+            self.slide_pause()
+        self.play(FadeOut(toptekst), FadeOut(srec))
+        return toppunkter, sub_graphs
+
+    def monotoni(self, plane, graph, toppunkter, sub_graphs):
+        cmap = {
+            "voksende": GREEN,
+            "aftagende": RED
+        }
+        monotonitekst = VGroup(
+            Tex("En funktion kan være"),
+            Tex("voksende", " eller ", "aftagende").set_color_by_tex_to_color_map(cmap),
+            Tex("i et interval")
+        ).arrange(DOWN, aligned_edge=LEFT).scale(0.75).to_edge(UL).set_z_index(3)
+        mrec = get_background_rect(monotonitekst, buff=0.1)
+        self.play(
+            Write(monotonitekst),
+            FadeIn(mrec),
+            run_time=1
+        )
+        self.slide_pause()
+        intervaller = VGroup(
+            MathTex(f"]-\\infty; {plane.p2c(toppunkter[0].get_center())[0]:.2f}["),
+            MathTex(f"]{plane.p2c(toppunkter[0].get_center())[0]:.2f}; {plane.p2c(toppunkter[0].get_center())[1]:.2f}["),
+            MathTex(f"]{plane.p2c(toppunkter[0].get_center())[1]:.2f}; \\infty[")
+        ).arrange(DOWN, aligned_edge=LEFT).next_to(monotonitekst, DOWN, aligned_edge=LEFT)
+        irec = get_background_rect(intervaller, buff=0.1)
+        self.play(FadeIn(irec))
+        for sub_graph, interval, col in zip(sub_graphs, intervaller, (cmap["voksende"], cmap["aftagende"], cmap["voksende"])):
+            sub_graph.set_color(col)
+            interval.set_color(col)
+            self.play(
+                LaggedStart(
+                    Create(sub_graph),
+                    Write(interval),
+                    lag_ratio=0.5,
+                    run_time=2
+                )
+            )
+            self.slide_pause()

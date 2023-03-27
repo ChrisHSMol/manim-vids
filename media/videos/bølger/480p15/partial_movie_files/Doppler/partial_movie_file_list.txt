@@ -1,0 +1,7 @@
+# This file is used internally by FFMPEG.
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/bølger/480p15/partial_movie_files/Doppler/2413584713_309887183_223132457.mp4'
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/bølger/480p15/partial_movie_files/Doppler/1766566432_329969645_1052219851.mp4'
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/bølger/480p15/partial_movie_files/Doppler/1766566432_3660022756_4242323294.mp4'
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/bølger/480p15/partial_movie_files/Doppler/1766566432_329969645_2814937264.mp4'
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/bølger/480p15/partial_movie_files/Doppler/1766566432_2435205813_2060248991.mp4'
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/bølger/480p15/partial_movie_files/Doppler/1766566432_36632488_1183691783.mp4'
