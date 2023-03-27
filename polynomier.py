@@ -2,7 +2,7 @@ from manim import *
 from helpers import *
 import numpy as np
 
-slides = False
+slides = True
 if slides:
     from manim_slides import Slide
 
@@ -376,6 +376,7 @@ class PolyRod(Slide if slides else MovingCameraScene):
 
 class MonotoniForhold(Slide if slides else Scene):
     def construct(self):
+        self.slide_pause(0.1)
         plane, graph = self.start_graph()
         toppunkter, sub_graphs = self.toppunkter(plane, graph)
         self.monotoni(plane, graph, toppunkter, sub_graphs)
@@ -400,12 +401,13 @@ class MonotoniForhold(Slide if slides else Scene):
         graph = plane.plot(
             lambda x: 0.2 * x ** 3 - 2 * x ** 2 + 3 * x + 5,
             color=BLUE,
-            z_index=2
+            z_index=2,
+            stroke_width=6
         )
         self.play(
             LaggedStart(
                 DrawBorderThenFill(plane),
-                DrawBorderThenFill(graph),
+                Create(graph),
                 lag_ratio=0.5
             ),
             run_time=2
@@ -414,7 +416,7 @@ class MonotoniForhold(Slide if slides else Scene):
         return plane, graph
 
     def toppunkter(self, plane, graph):
-        toptekst = Tex("Toppunkter er der, hvor grafen skifter retning").scale(0.75).to_edge(UL).set_z_index(3)
+        toptekst = Tex("Toppunkter er der, hvor grafen skifter retning").scale(0.75).to_edge(UL, buff=0.1).set_z_index(3)
         toptekst[0][:10].set_color(YELLOW)
         srec = get_background_rect(toptekst, buff=0.1)
         self.play(
@@ -433,6 +435,12 @@ class MonotoniForhold(Slide if slides else Scene):
                 z_index=3
             ) for x in top_x
         ]).add(Dot(radius=0.00))
+        punktlabels = VGroup(*[
+            Tex(
+                f"({plane.p2c(p.get_center())[0]:.2f}; {plane.p2c(p.get_center())[1]:.2f})",
+                color=p.get_color(), z_index=p.get_z_index()
+            ).scale(0.45 if p != toppunkter[-1] else 0.0).next_to(p, UP) for p in toppunkter
+        ])
         xlows = [-3, *top_x]
         xhighs = [*top_x, 10]
         sub_graphs = VGroup(*[
@@ -440,10 +448,11 @@ class MonotoniForhold(Slide if slides else Scene):
                 lambda x: graph.underlying_function(x),
                 x_range=[xlow, xhigh],
                 color=YELLOW,
-                z_index=2
+                z_index=2,
+                stroke_width=6
             ) for xlow, xhigh in zip(xlows, xhighs)
         ])
-        for sub_graph, toppunkt in zip(sub_graphs, toppunkter):
+        for sub_graph, toppunkt, label in zip(sub_graphs, toppunkter, punktlabels):
             self.play(
                 LaggedStart(
                     ShowPassingFlash(
@@ -455,14 +464,26 @@ class MonotoniForhold(Slide if slides else Scene):
                         toppunkt,
                         run_time=1
                     ),
+                    Write(
+                        label,
+                        run_time=0.5
+                    ),
                     lag_ratio=0.4
                 ),
             )
             self.slide_pause()
         self.play(FadeOut(toptekst), FadeOut(srec))
+        self.remove(punktlabels)
         return toppunkter, sub_graphs
 
     def monotoni(self, plane, graph, toppunkter, sub_graphs):
+        punktlabels = VGroup(*[
+            Tex(
+                f"({plane.p2c(p.get_center())[0]:.2f}; {plane.p2c(p.get_center())[1]:.2f})",
+                color=p.get_color(), z_index=p.get_z_index()
+            ).scale(0.45 if p != toppunkter[-1] else 0.0).next_to(p, UP) for p in toppunkter
+        ])
+        self.add(punktlabels)
         cmap = {
             "voksende": GREEN,
             "aftagende": RED
@@ -481,8 +502,8 @@ class MonotoniForhold(Slide if slides else Scene):
         self.slide_pause()
         intervaller = VGroup(
             MathTex(f"]-\\infty; {plane.p2c(toppunkter[0].get_center())[0]:.2f}["),
-            MathTex(f"]{plane.p2c(toppunkter[0].get_center())[0]:.2f}; {plane.p2c(toppunkter[0].get_center())[1]:.2f}["),
-            MathTex(f"]{plane.p2c(toppunkter[0].get_center())[1]:.2f}; \\infty[")
+            MathTex(f"]{plane.p2c(toppunkter[0].get_center())[0]:.2f}; {plane.p2c(toppunkter[1].get_center())[0]:.2f}["),
+            MathTex(f"]{plane.p2c(toppunkter[1].get_center())[0]:.2f}; \\infty[")
         ).arrange(DOWN, aligned_edge=LEFT).next_to(monotonitekst, DOWN, aligned_edge=LEFT)
         irec = get_background_rect(intervaller, buff=0.1)
         self.play(FadeIn(irec))
