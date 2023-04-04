@@ -1,0 +1,23 @@
+{
+  "slides": [
+    {
+      "type": "slide",
+      "start_animation": 0,
+      "end_animation": 2,
+      "number": 1,
+      "terminated": false
+    },
+    {
+      "type": "last",
+      "start_animation": 2,
+      "end_animation": 3,
+      "number": 2,
+      "terminated": false
+    }
+  ],
+  "files": [
+    "./slides\\files\\ParallelForskydning\\4266129954_4035659775_1034468960.mp4",
+    "./slides\\files\\ParallelForskydning\\1442284246_2526496290_3150466216.mp4",
+    "./slides\\files\\ParallelForskydning\\1442284246_3795850897_1961637886.mp4"
+  ]
+}

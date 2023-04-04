@@ -140,4 +140,3 @@ class TwoObjectsFalling(SpaceScene):
             self.wait(10)
             self.stop_rigidity(rect, circle, walls)
             self.remove(rect, circle, walls)
->>>>>>> b8538408df22dbaf9ba266ae15255565f2107a26

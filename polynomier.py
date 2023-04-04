@@ -2,7 +2,7 @@ from manim import *
 from helpers import *
 import numpy as np
 
-slides = True
+slides = False
 if slides:
     from manim_slides import Slide
 
@@ -519,3 +519,107 @@ class MonotoniForhold(Slide if slides else Scene):
                 )
             )
             self.slide_pause()
+
+
+class ParallelForskydning(Slide if slides else Scene):
+    def construct(self):
+        self.lodret()
+
+        self.slide_pause(5)
+
+    def slide_pause(self, t=1.0, slides_bool=slides):
+        return slides_pause(self, t=t, slides_bool=slides_bool)
+
+    def lodret(self):
+        width = 14
+        plane = NumberPlane(
+            x_range=(-10.5, 10.5, 1),
+            y_range=(-5.5, 10.5, 1),
+            x_length=width,
+            y_length=width / 16 * 9,
+            background_line_style={
+                "stroke_color": TEAL,
+                "stroke_width": 1.5,
+                "stroke_opacity": 0.3
+            }
+        )
+        self.play(
+            DrawBorderThenFill(plane),
+            run_time=2
+        )
+        self.slide_pause()
+
+        c_tracker = ValueTracker(0)
+        cmin, cmax = -5, 5
+        graph = always_redraw(lambda:
+            plane.plot(
+                lambda x: 0.25 * x**2 + c_tracker.get_value(),
+                color=YELLOW
+            )
+        )
+        self.play(
+            Create(graph),
+            run_time=2
+        )
+        self.slide_pause()
+
+        c_slider = VGroup(
+            Line(
+                start=ORIGIN,
+                end=2 * UP,
+                color=WHITE,
+                stroke_width=2
+            )
+        )
+        _slider_ticks = [
+            Line(
+                start=0.05*LEFT + i*UP,
+                end=0.05*RIGHT + i*UP,
+                color=WHITE,
+                stroke_width=2
+            ) for i in np.linspace(0, 2, 11)
+        ]
+        c_slider.add(*_slider_ticks)
+        c_slider.add(*[
+            DecimalNumber(
+                n,
+                num_decimal_places=0,
+                include_sign=n != 0
+            ).scale(0.35).next_to(
+                hline, LEFT, buff=0.075
+            ) for n, hline in zip(np.arange(cmin, cmax+0.01, 1), c_slider[1:])
+        ])
+        c_slider.add(
+            MathTex("c", color=YELLOW).next_to(c_slider[0], UP)
+        )
+        c_slider.set_z_index(plane.get_z_index()+5).to_edge(UL)
+
+        c_arrow = always_redraw(lambda:
+            Arrow(
+                0.5*RIGHT, 0.5*LEFT, color=YELLOW
+            ).next_to(
+                c_slider[0], RIGHT, buff=0.1
+            ).shift(
+                c_tracker.get_value() / cmax * UP
+            )
+        ).set_z_index(c_slider.get_z_index())
+        slider_rect = get_background_rect(
+            VGroup(*c_slider, c_arrow),
+            stroke_colour=YELLOW,
+        )
+        self.play(
+            DrawBorderThenFill(slider_rect, run_time=1),
+            LaggedStart(
+                DrawBorderThenFill(c_slider, run_time=2),
+                DrawBorderThenFill(c_arrow, run_time=1.5),
+                lag_ratio=0.75
+            ),
+        )
+
+        for c in [1, 2, 5, -2, -5, 3, 0]:
+            self.play(
+                c_tracker.animate.set_value(c),
+                run_time=2
+            ),
+            self.slide_pause()
+
