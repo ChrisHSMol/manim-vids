@@ -536,6 +536,7 @@ class Egenskaber(Slide if slides else Scene):
         #     self.slide_pause()
         # # self.slide_pause()
 
+
 class Interferens(Slide if slides else Scene):
     def construct(self):
         self.konstr_destr()
@@ -591,3 +592,82 @@ class Interferens(Slide if slides else Scene):
         #     run_time=2
         # )
         # self.slide_pause()
+
+
+class Doppler(Slide if slides else MovingCameraScene):
+    def construct(self):
+        self.lydkilde()
+        self.slide_pause(5)
+
+    def slide_pause(self, t=1.0, slides_bool=slides):
+        return slides_pause(self, t, slides_bool)
+
+    def lydkilde(self):
+        ambulance = SVGMobject("SVGs/ambulance.svg")
+        self.play(
+            DrawBorderThenFill(ambulance),
+            run_time=2
+        )
+        self.slide_pause()
+
+        time = ValueTracker(0)
+        sound_radius1 = ValueTracker(0.0)
+        sound_radius2 = ValueTracker(0.0)
+        sound_radius3 = ValueTracker(0.0)
+        sound_radius4 = ValueTracker(0.0)
+        sound_radius5 = ValueTracker(0.0)
+        sradii = [ValueTracker(0.0) for _ in range(5)]
+        swave = always_redraw(lambda:
+            # Circle(
+            #     radius=sound_radius.get_value(),
+            #     color=BLUE_C,
+            #     stroke_width=10/(0.1*sound_radius.get_value() + 1)**2 if sound_radius.get_value() < 5 else 0
+            # ).move_to(ambulance.get_center())
+            VGroup(*[
+                Circle(
+                    radius=sr.get_value(),
+                    color=BLUE_C,
+                    # stroke_width=10/(0.1*sr.get_value() + 1)**2 if sr.get_value() < 5 else 0
+                    stroke_width=5
+                ).move_to(
+                    ambulance.get_center() if sr.get_value() < 0.1 else [0.4*i, 0, 0]
+                ) for i, sr in enumerate(sradii)
+            ])
+        )
+        # for i in range(5):
+        #     self.add(swave)
+        #     self.play(
+        #         sound_radius.animate.set_value(5.0),
+        #         rate_func=rate_functions.linear,
+        #         run_time=4
+        #     )
+        #     sound_radius.set_value(0.0)
+        #     self.remove(swave)
+        self.add(swave)
+        self.play(
+            LaggedStart(
+                *[sr.animate.set_value(5.0) for sr in sradii],
+                lag_ratio=0.2
+            ),
+            rate_func=rate_functions.linear,
+            run_time=5
+        )
+        self.remove(swave)
+
+        self.slide_pause()
+
+        [sr.set_value(0.0) for sr in sradii]
+        self.add(swave)
+        self.play(
+            AnimationGroup(
+                LaggedStart(
+                    *[sr.animate.set_value(5.0) for sr in sradii],
+                    lag_ratio=0.2
+                ),
+                ambulance.animate.shift(2*RIGHT)
+            ),
+            rate_func=rate_functions.linear,
+            run_time=5
+        )
+        self.remove(swave)
+

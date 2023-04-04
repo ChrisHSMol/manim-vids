@@ -2,7 +2,7 @@ from manim import *
 from helpers import *
 import numpy as np
 
-slides = False
+slides = True
 if slides:
     from manim_slides import Slide
 
@@ -66,7 +66,8 @@ class Polynomier(Slide if slides else MovingCameraScene):
         return str_ind
 
     def etymologi(self):
-        play_latest = True
+        self.slide_pause()
+        play_latest = False
         open_quote = Tex(r"Kært ", "barn ", "har ", "mange ", "navne")
         if not play_latest:
             self.play(
@@ -83,8 +84,8 @@ class Polynomier(Slide if slides else MovingCameraScene):
                 Write(mit_navn),
                 run_time=2
             )
-            self.play(FadeOut(mit_navn), run_time=0.5)
             self.slide_pause()
+            self.play(FadeOut(mit_navn), run_time=0.5)
 
             self.play(
                 open_quote[-2].animate.set_color(YELLOW),
@@ -136,20 +137,20 @@ class Polynomier(Slide if slides else MovingCameraScene):
         }
         polynomier = VGroup(
             MathTex(
-                "y_0", " = ", "a_0",
+                "f_0(", "x", ")", " = ", "a_0",
             ),
             MathTex(
-                "y_1", " = ", "a_0", " + ", "a_1", r"\cdot", "x",
+                "f_1(", "x", ")", " = ", "a_0", " + ", "a_1", r"\cdot", "x",
             ),
             MathTex(
-                "y_2", " = ", "a_0", " + ", "a_1", r"\cdot", "x", " + ", "a_2", r"\cdot", "x", "^2",
+                "f_2(", "x", ")", " = ", "a_0", " + ", "a_1", r"\cdot", "x", " + ", "a_2", r"\cdot", "x", "^2",
             ),
             MathTex(
-                "y_3", " = ", "a_0" " + ", "a_1", r"\cdot", "x", " + ",
+                "f_3(", "x", ")", " = ", "a_0" " + ", "a_1", r"\cdot", "x", " + ",
                 "a_2", r"\cdot", "x", "^2", " + ", "a_3", r"\cdot", "x", "^3",
             ),
             MathTex(
-                "y_4", " = ", "a_0", " + ", "a_1", r"\cdot", "x", " + ", "a_2", r"\cdot", "x", "^2", " + ",
+                "f_4(", "x", ")", " = ", "a_0", " + ", "a_1", r"\cdot", "x", " + ", "a_2", r"\cdot", "x", "^2", " + ",
                 "a_3", r"\cdot", "x", "^3", " + ", "a_4", r"\cdot", "x", "^4",
             )
         ).arrange(DOWN, aligned_edge=LEFT).to_edge(RIGHT)
@@ -206,14 +207,14 @@ class Polynomier(Slide if slides else MovingCameraScene):
 
         ex_pol = VGroup(
             VGroup(
-                MathTex(r"y = 2 \cdot x - 4").set_color(YELLOW_B),
-                MathTex(r"y = -4 \cdot x + 2").set_color(YELLOW_C),
-                MathTex(r"y = x^2 + 2 \cdot x - 1").set_color(YELLOW_D)
+                MathTex(r"f(x) = 2 \cdot x - 4").set_color(YELLOW_B),
+                MathTex(r"f(x) = -4 \cdot x + 2").set_color(YELLOW_C),
+                MathTex(r"f(x) = x^2 + 2 \cdot x - 1").set_color(YELLOW_D)
             ).arrange(DOWN, aligned_edge=LEFT, buff=1.5),
             VGroup(
-                MathTex(r"y = x^6 + 2 \cdot x^4 - x^3 + 2 \cdot x").set_color(BLUE_B),
-                MathTex(r"y = x^3 - 5 \cdot x^4 + x - 1").set_color(BLUE_C),
-                MathTex(r"y = x + 2\cdot x - 30 \cdot x^3 + x^{25}").set_color(BLUE_D)
+                MathTex(r"f(x) = x^6 + 2 \cdot x^4 - x^3 + 2 \cdot x").set_color(BLUE_B),
+                MathTex(r"f(x) = x^3 - 5 \cdot x^4 + x - 1").set_color(BLUE_C),
+                MathTex(r"f(x) = x + 2\cdot x - 30 \cdot x^3 + x^{25}").set_color(BLUE_D)
             ).arrange(DOWN, aligned_edge=LEFT, buff=1.5)
         ).arrange(RIGHT, aligned_edge=DOWN, buff=1)
 
@@ -284,8 +285,6 @@ class Polynomier(Slide if slides else MovingCameraScene):
         )
         self.slide_pause()
 
-
-
     def andengrad(self):
         a = ValueTracker(0)
         b = ValueTracker(2)
@@ -346,3 +345,177 @@ class Polynomier(Slide if slides else MovingCameraScene):
             c.animate.set_value(0), run_time=1
         )
         self.slide_pause(3)
+
+
+class PolyRod(Slide if slides else MovingCameraScene):
+    def construct(self):
+        self.roots()
+        self.slide_pause(5)
+
+    def slide_pause(self, t=1.0, slides_bool=slides):
+        return slides_pause(self, t=t, slides_bool=slides_bool)
+
+    def roots(self):
+        cmap = {
+            "rod": YELLOW,
+            "rødder": YELLOW,
+            "nulpunkt": BLUE_B
+        }
+        opener = VGroup(
+            Tex("En rod er et nulpunkt for grafen."),
+            Tex("Et nulpunkt er, når y-værdien for grafen er 0.")
+        ).arrange(DOWN, aligned_edge=LEFT)
+        for line in opener:
+            line.set_color_by_tex_to_color_map(cmap)
+
+        self.play(
+            Write(opener),
+            run_time=1
+        )
+
+
+class MonotoniForhold(Slide if slides else Scene):
+    def construct(self):
+        self.slide_pause(0.1)
+        plane, graph = self.start_graph()
+        toppunkter, sub_graphs = self.toppunkter(plane, graph)
+        self.monotoni(plane, graph, toppunkter, sub_graphs)
+
+        self.slide_pause(5)
+
+    def slide_pause(self, t=1.0, slides_bool=slides):
+        return slides_pause(self, t=t, slides_bool=slides_bool)
+
+    def start_graph(self):
+        plane = NumberPlane(
+            x_range=(-5.5, 10.5, 1),
+            y_range=(-8.5, 9.5, 2),
+            x_length=width,
+            y_length=width / 16 * 9,
+            background_line_style={
+                "stroke_color": TEAL,
+                "stroke_width": 1.5,
+                "stroke_opacity": 0.3
+            },
+        )
+        graph = plane.plot(
+            lambda x: 0.2 * x ** 3 - 2 * x ** 2 + 3 * x + 5,
+            color=BLUE,
+            z_index=2,
+            stroke_width=6
+        )
+        self.play(
+            LaggedStart(
+                DrawBorderThenFill(plane),
+                Create(graph),
+                lag_ratio=0.5
+            ),
+            run_time=2
+        )
+        self.slide_pause()
+        return plane, graph
+
+    def toppunkter(self, plane, graph):
+        toptekst = Tex("Toppunkter er der, hvor grafen skifter retning").scale(0.75).to_edge(UL, buff=0.1).set_z_index(3)
+        toptekst[0][:10].set_color(YELLOW)
+        srec = get_background_rect(toptekst, buff=0.1)
+        self.play(
+            Write(toptekst),
+            FadeIn(srec),
+            run_time=0.5
+        )
+        self.slide_pause()
+
+        top_x = [0.8612671710, 5.805399496]
+        toppunkter = VGroup(*[
+            Dot(
+                plane.c2p(x, graph.underlying_function(x)),
+                radius=0.06,
+                color=YELLOW,
+                z_index=3
+            ) for x in top_x
+        ]).add(Dot(radius=0.00))
+        punktlabels = VGroup(*[
+            Tex(
+                f"({plane.p2c(p.get_center())[0]:.2f}; {plane.p2c(p.get_center())[1]:.2f})",
+                color=p.get_color(), z_index=p.get_z_index()
+            ).scale(0.45 if p != toppunkter[-1] else 0.0).next_to(p, UP) for p in toppunkter
+        ])
+        xlows = [-3, *top_x]
+        xhighs = [*top_x, 10]
+        sub_graphs = VGroup(*[
+            plane.plot(
+                lambda x: graph.underlying_function(x),
+                x_range=[xlow, xhigh],
+                color=YELLOW,
+                z_index=2,
+                stroke_width=6
+            ) for xlow, xhigh in zip(xlows, xhighs)
+        ])
+        for sub_graph, toppunkt, label in zip(sub_graphs, toppunkter, punktlabels):
+            self.play(
+                LaggedStart(
+                    ShowPassingFlash(
+                        sub_graph,
+                        time_width=2,
+                        run_time=4
+                    ),
+                    DrawBorderThenFill(
+                        toppunkt,
+                        run_time=1
+                    ),
+                    Write(
+                        label,
+                        run_time=0.5
+                    ),
+                    lag_ratio=0.4
+                ),
+            )
+            self.slide_pause()
+        self.play(FadeOut(toptekst), FadeOut(srec))
+        self.remove(punktlabels)
+        return toppunkter, sub_graphs
+
+    def monotoni(self, plane, graph, toppunkter, sub_graphs):
+        punktlabels = VGroup(*[
+            Tex(
+                f"({plane.p2c(p.get_center())[0]:.2f}; {plane.p2c(p.get_center())[1]:.2f})",
+                color=p.get_color(), z_index=p.get_z_index()
+            ).scale(0.45 if p != toppunkter[-1] else 0.0).next_to(p, UP) for p in toppunkter
+        ])
+        self.add(punktlabels)
+        cmap = {
+            "voksende": GREEN,
+            "aftagende": RED
+        }
+        monotonitekst = VGroup(
+            Tex("En funktion kan være"),
+            Tex("voksende", " eller ", "aftagende").set_color_by_tex_to_color_map(cmap),
+            Tex("i et interval")
+        ).arrange(DOWN, aligned_edge=LEFT).scale(0.75).to_edge(UL).set_z_index(3)
+        mrec = get_background_rect(monotonitekst, buff=0.1)
+        self.play(
+            Write(monotonitekst),
+            FadeIn(mrec),
+            run_time=1
+        )
+        self.slide_pause()
+        intervaller = VGroup(
+            MathTex(f"]-\\infty; {plane.p2c(toppunkter[0].get_center())[0]:.2f}["),
+            MathTex(f"]{plane.p2c(toppunkter[0].get_center())[0]:.2f}; {plane.p2c(toppunkter[1].get_center())[0]:.2f}["),
+            MathTex(f"]{plane.p2c(toppunkter[1].get_center())[0]:.2f}; \\infty[")
+        ).arrange(DOWN, aligned_edge=LEFT).next_to(monotonitekst, DOWN, aligned_edge=LEFT)
+        irec = get_background_rect(intervaller, buff=0.1)
+        self.play(FadeIn(irec))
+        for sub_graph, interval, col in zip(sub_graphs, intervaller, (cmap["voksende"], cmap["aftagende"], cmap["voksende"])):
+            sub_graph.set_color(col)
+            interval.set_color(col)
+            self.play(
+                LaggedStart(
+                    Create(sub_graph),
+                    Write(interval),
+                    lag_ratio=0.5,
+                    run_time=2
+                )
+            )
+            self.slide_pause()

@@ -1,0 +1,4 @@
+# This file is used internally by FFMPEG.
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/function_tester/1080p60/partial_movie_files/TexFalling/2902699114_1037758731_3931433758.mp4'
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/function_tester/1080p60/partial_movie_files/TexFalling/3931933789_1065620499_2265789484.mp4'
+file 'file:C:/Users/KG-chri12mz/PycharmProjects/KG/manim-vids/manim-vids/media/videos/function_tester/1080p60/partial_movie_files/TexFalling/3931933789_1065620499_1917642340.mp4'
