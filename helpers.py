@@ -2,6 +2,15 @@ from manim import *
 import numpy as np
 
 
+# class Skyder(VMobject):
+#     def __init__(self, xmin=-5, xmax=5, xstep=1):
+#         self.xmin = xmin
+#         self.xmax = xmax
+#         self.xstep = xstep
+#
+#     def
+
+
 def _prep_title(title, close=False):
     if isinstance(title, str):
         title = Tex(title)

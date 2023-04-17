@@ -543,11 +543,11 @@ class ParallelForskydning(Slide if slides else Scene):
                 "stroke_opacity": 0.3
             }
         )
-        self.play(
-            DrawBorderThenFill(plane),
-            run_time=2
-        )
-        self.slide_pause()
+        # self.play(
+        #     DrawBorderThenFill(plane),
+        #     run_time=2
+        # )
+        # self.slide_pause()
 
         c_tracker = ValueTracker(0)
         cmin, cmax = -5, 5
@@ -557,11 +557,12 @@ class ParallelForskydning(Slide if slides else Scene):
                 color=YELLOW
             )
         )
-        self.play(
-            Create(graph),
-            run_time=2
-        )
-        self.slide_pause()
+        # self.play(
+        #     Create(graph),
+        #     run_time=2
+        # )
+        # self.slide_pause()
+        self.add(plane, graph)
 
         c_slider = VGroup(
             Line(
@@ -585,6 +586,7 @@ class ParallelForskydning(Slide if slides else Scene):
                 n,
                 num_decimal_places=0,
                 include_sign=n != 0
+                # include_sign=True
             ).scale(0.35).next_to(
                 hline, LEFT, buff=0.075
             ) for n, hline in zip(np.arange(cmin, cmax+0.01, 1), c_slider[1:])
@@ -592,9 +594,9 @@ class ParallelForskydning(Slide if slides else Scene):
         c_slider.add(
             MathTex("c", color=YELLOW).next_to(c_slider[0], UP)
         )
-        c_slider.set_z_index(plane.get_z_index()+5).to_edge(UL)
 
-        c_arrow = always_redraw(lambda:
+        # c_arrow = always_redraw(lambda:
+        c_slider.add(always_redraw(lambda:
             Arrow(
                 0.5*RIGHT, 0.5*LEFT, color=YELLOW
             ).next_to(
@@ -602,24 +604,42 @@ class ParallelForskydning(Slide if slides else Scene):
             ).shift(
                 c_tracker.get_value() / cmax * UP
             )
-        ).set_z_index(c_slider.get_z_index())
+        ))
+        c_slider.set_z_index(plane.get_z_index() + 5).to_edge(UL)
         slider_rect = get_background_rect(
-            VGroup(*c_slider, c_arrow),
+            c_slider,
+            # VGroup(*c_slider, c_arrow),
             stroke_colour=YELLOW,
+            # fill_opacity=0
         )
         self.play(
             DrawBorderThenFill(slider_rect, run_time=1),
             LaggedStart(
-                DrawBorderThenFill(c_slider, run_time=2),
-                DrawBorderThenFill(c_arrow, run_time=1.5),
-                lag_ratio=0.75
+                *[DrawBorderThenFill(c, run_time=1) for c in c_slider],
+                # DrawBorderThenFill(c_arrow, run_time=1.5),
+                lag_ratio=0.075
             ),
         )
 
-        for c in [1, 2, 5, -2, -5, 3, 0]:
-            self.play(
-                c_tracker.animate.set_value(c),
-                run_time=2
-            ),
-            self.slide_pause()
+        for i in range(2):
+            if i == 1:
+                forskrift = always_redraw(lambda:
+                    VGroup(
+                        MathTex("f(x)=x^2"),
+                        # MathTex(f"{c_tracker.get_value():.2f}", color=YELLOW)
+                        DecimalNumber(c_tracker.get_value(), num_decimal_places=2, include_sign=True, color=YELLOW)
+                    ).arrange(RIGHT).next_to(graph, DOWN).shift(UP + 4*RIGHT)
+                )
+                self.play(
+                    Write(forskrift),
+                    run_time=0.5
+                )
+                self.slide_pause()
+
+            for c in [1, 2, 5, -2, -5, 3, 0]:
+                self.play(
+                    c_tracker.animate.set_value(c),
+                    run_time=2
+                ),
+                self.slide_pause()
 
