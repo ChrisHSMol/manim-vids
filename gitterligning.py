@@ -2,14 +2,14 @@ from manim import *
 from helpers import *
 import numpy as np
 
-slides = False
+slides = True
 if slides:
     from manim_slides import Slide
 
 
 class GitterLigning(Slide if slides else Scene):
     def construct(self):
-        # self.udstyr()
+        self.udstyr()
         self.gitter_ligning()
         self.slide_pause(5)
 
@@ -30,8 +30,11 @@ class GitterLigning(Slide if slides else Scene):
         )
         self.slide_pause()
 
-        linjer = ValueTracker(200)
-        gitter_top = Line(1*DOWN, 1*UP, color=PINK).next_to(laser_gun, RIGHT, buff=2).shift(0.25*UP)
+        linjer = ValueTracker(10)
+        dist_lg = ValueTracker(2)
+        gitter_top = Line(
+            1*DOWN, 1*UP, color=PINK
+        ).next_to(laser_gun, RIGHT, buff=0).shift(0.25*UP + dist_lg.get_value()*RIGHT)
         gitter_ridser = always_redraw(lambda:
             VGroup(
                 Square(5, color=gitter_top.get_color()),
@@ -40,7 +43,8 @@ class GitterLigning(Slide if slides else Scene):
                         start=[i, -2.5, 0],
                         end=[i, 2.5, 0],
                         stroke_width=0.5
-                    ) for i in np.linspace(-2.5, 2.5, int(linjer.get_value()/10))
+                    # ) for i in np.linspace(-2.5, 2.5, int(linjer.get_value()/10))
+                    ) for i in np.linspace(-2.5, 2.5, int(linjer.get_value()))
                 ]
             ).next_to(gitter_top, RIGHT)
         )
@@ -56,7 +60,7 @@ class GitterLigning(Slide if slides else Scene):
             Tex(
                 f"{int(linjer.get_value())} ridser",
                 color=gitter_top.get_color()
-            ).next_to(gitter_top, UP)
+            ).next_to(gitter_top, UL)
         )
         self.play(
             LaggedStart(
@@ -80,8 +84,10 @@ class GitterLigning(Slide if slides else Scene):
         self.remove(gitter_name, gitter_ridser)
         self.add(gitter_top, gitter_name2)
 
-        wall = Line(5*DOWN, 5*UP).to_edge(RIGHT)
-        wall_tekst = Tex("Væg").next_to(wall, LEFT).shift(3.5*UP)
+        dist_gw = ValueTracker(5)
+        # wall = Line(5*DOWN, 5*UP).to_edge(RIGHT)
+        wall = Line(5*DOWN, 5*UP).shift(dist_gw.get_value() * RIGHT)
+        wall_tekst = Tex("Væg").next_to(wall, RIGHT).shift(3.5*UP)
         self.play(
             Create(wall),
             Create(wall_tekst),
@@ -89,66 +95,253 @@ class GitterLigning(Slide if slides else Scene):
         self.slide_pause()
         self.remove(*[m for m in self.mobjects])
 
-    def gitter_ligning(self):
+    def _gitter_ligning(self):
         linjer = ValueTracker(200)  # mm^-1
         wlength = ValueTracker(400)  # nm
-        # dist = ValueTracker(5)  # m
+        dist_lg = ValueTracker(2)  # m
+        dist_gw = ValueTracker(5)  # m
 
         laser_gun = SVGMobject("SVGs/laser_gun.svg").to_edge(LEFT).shift(0.25*DOWN)
         laser_gun.set_color(invert_color(laser_gun.get_color()))
         laser_name = Tex("Laser").set_color(color_gradient([BLUE, GREEN, RED], 3)).next_to(laser_gun, UP)
-        wall = Line(5 * DOWN, 5 * UP).to_edge(RIGHT)
-        wall_name = Tex("Væg").next_to(wall, LEFT).shift(3.5 * UP)
-        gitter_top = Line(1*DOWN, 1*UP, color=PINK).next_to(laser_gun, RIGHT, buff=2).shift(0.25*UP)
-        # gitter_name = Tex("Gitter", color=gitter_top.get_color()).next_to(gitter_top, UP)
+        gitter_top = always_redraw(lambda:
+            Line(
+                DOWN, UP, color=PINK
+            ).next_to(laser_gun, RIGHT, buff=0).shift(0.25*UP + dist_lg.get_value()*RIGHT)
+        )
         gitter_name = always_redraw(lambda:
             Tex(
                 f"{int(linjer.get_value())} ridser",
                 color=gitter_top.get_color()
             ).next_to(gitter_top, UP)
         )
+        wall = Line(5*DOWN, 5*UP).shift(dist_gw.get_value() * RIGHT)
+        wall_name = Tex("Væg").next_to(wall, RIGHT).shift(3.5 * UP)
         self.add(laser_gun, laser_name, wall, wall_name, gitter_top, gitter_name)
 
-        dist_gw = ValueTracker((wall.get_left() - gitter_top.get_left())[0])
-        dist_lg = ValueTracker((gitter_top.get_left() - laser_gun.get_left())[0])
-
-        laser_line = Line(
-            start=laser_gun.get_right() + 0.25*UP,
-            end=gitter_top.get_left(),
-            stroke_width=2,
-            color=RED
-        )
-        diff_lines = always_redraw(lambda:
-            VGroup(
+        colordots = VGroup()
+        colorlines = VGroup()
+        for wavelength, color in zip([400, 550, 700], [BLUE, GREEN, RED]):
+            wlength.set_value(wavelength)
+            laser_line = always_redraw(lambda:
+                Line(
+                    start=laser_gun.get_right() + 0.25*UP,
+                    end=gitter_top.get_left(),
+                    stroke_width=2,
+                    color=color
+                )
+            )
+            laser_lambda = always_redraw(lambda:
+                Tex(
+                    f"$\\lambda={wlength.get_value():.0f}$ nm", color=laser_line.get_color()
+                ).scale(0.75).next_to(laser_line, DOWN)
+            )
+            diff_lines = always_redraw(lambda:
+                VGroup(
+                    *[
+                        Line(
+                            start=gitter_top.get_right(),
+                            end=wall.get_left() + dist_gw.get_value() * np.tan(
+                                np.arcsin(
+                                    n * wlength.get_value()*10**(-9) * linjer.get_value()*10**3
+                                )
+                            ) * UP,
+                            stroke_width=2*np.exp(-0.25*np.abs(n)),
+                            color=laser_line.get_color()
+                        ) for n in np.arange(-3, 3.1, 1)
+                    ]
+                )
+            )
+            self.play(
+                Create(laser_line),
+                Write(laser_lambda),
+                rate_func=rate_functions.linear,
+                run_time=dist_lg.get_value()
+            )
+            self.play(
+                *[Create(dline) for dline in diff_lines],
+                rate_func=rate_functions.linear,
+                run_time=dist_gw.get_value()
+            )
+            self.slide_pause()
+            dots = VGroup(
                 *[
-                    Line(
-                        start=gitter_top.get_right(),
-                        end=wall.get_left() + dist_gw.get_value() * np.tan(
-                            np.arcsin(
-                                n * wlength.get_value()*10**(-9) * linjer.get_value()*10**3
-                            )
-                        ) * UP,
-                        stroke_width=2*np.exp(-0.25*np.abs(n)),
+                    Dot(
+                        dline.get_end(),
                         color=laser_line.get_color()
-                    ) for n in np.arange(-5, 5.1, 1)
+                    ) for dline in diff_lines
                 ]
             )
-        )
-        self.play(
-            Create(laser_line),
-            rate_func=rate_functions.linear,
-            run_time=dist_lg.get_value()
-        )
-        self.play(
-            *[Create(dline) for dline in diff_lines],
-            rate_func=rate_functions.linear,
-            run_time=dist_gw.get_value()
-        )
-        self.slide_pause()
+            colordots.add(dots)
+            colorlines.add(VGroup(laser_line, diff_lines))
+            self.play(
+                Create(dots)
+            )
+            self.slide_pause()
+            self.play(
+                FadeOut(laser_lambda, laser_line, diff_lines),
+                dots.animate.set_opacity(0.25),
+                run_time=0.5
+            )
 
-        self.play(
-            linjer.animate.set_value(300),
-            run_time=5
+        for dots, lines in zip(colordots, colorlines):
+            self.play(
+                dots.animate.set_opacity(1),
+                # lines.animate.set_opacity(1),
+                run_time=0.5
+            )
+            self.slide_pause()
+            self.play(
+                dots.animate.set_opacity(0.25),
+                # lines.animate.set_opacity(0.25),
+                run_time=0.25
+            )
+        # self.play(
+        #     # linjer.animate.set_value(600),
+        #     wlength.animate.set_value(700),
+        #     run_time=1
+        # )
+
+    def gitter_ligning(self):
+        linjer = ValueTracker(200)  # mm^-1
+        dist_lg = ValueTracker(2)  # m
+        dist_gw = ValueTracker(5)  # m
+        laser_thickness = 4
+
+        laser_gun = SVGMobject("SVGs/laser_gun.svg").to_edge(LEFT).shift(0.25*DOWN)
+        laser_gun.set_color(invert_color(laser_gun.get_color()))
+        laser_name = Tex("Laser").set_color(color_gradient([BLUE, GREEN, RED], 3)).next_to(laser_gun, UP)
+        gitter_top = always_redraw(lambda:
+            Line(
+                DOWN, UP, color=PINK
+            ).next_to(laser_gun, RIGHT, buff=0).shift(0.25*UP + dist_lg.get_value()*RIGHT)
         )
+        gitter_name = always_redraw(lambda:
+            Tex(
+                f"{int(linjer.get_value())} ridser",
+                color=gitter_top.get_color()
+            ).next_to(gitter_top, UL)
+        )
+        wall = Line(5*DOWN, 5*UP).shift(dist_gw.get_value() * RIGHT)
+        wall_name = Tex("Væg").next_to(wall, RIGHT).shift(3.5 * UP)
+        self.add(laser_gun, laser_name, wall, wall_name, gitter_top, gitter_name)
 
+        wavelengths = [400, 532, 680]
+        colors = [BLUE, GREEN, RED]
+        self.remove(gitter_name)
+        for i, linjer in enumerate([200, 400, 600]):
+            linjer = ValueTracker(linjer)
+            gitter_name = Tex(
+                f"{linjer.get_value():.0f} ridser",
+                color=gitter_top.get_color()
+            ).next_to(gitter_top, UL)
+            self.play(
+                Write(gitter_name),
+                run_time=0.5
+            )
 
+            laser_lines = VGroup(
+                *[
+                    Line(
+                        start=laser_gun.get_right() + 0.25*UP,
+                        end=gitter_top.get_left(),
+                        stroke_width=laser_thickness,
+                        color=color
+                    ) for color in colors
+                ]
+            )
+            laser_lambdas = VGroup(
+                *[
+                    Tex(
+                        f"$\\lambda={wavelength:.0f}$ nm", color=line.get_color()
+                    ).scale(0.6).next_to(line, DOWN) for wavelength, line in zip(wavelengths, laser_lines)
+                ]
+            )
+            difflines = VGroup(
+                *[
+                    VGroup(
+                        *[
+                            Line(
+                                start=gitter_top.get_right(),
+                                end=wall.get_left() + dist_gw.get_value() * np.tan(
+                                    np.arcsin(
+                                        n * wavelength * 10 ** (-9) * linjer.get_value() * 10 ** 3
+                                    )
+                                ) * UP,
+                                # stroke_width=laser_thickness * np.exp(-0.25 * np.abs(n)),
+                                stroke_width=laser_thickness * np.exp(
+                                    -2 * np.abs(np.arcsin(n * wavelength * 10 ** (-9) * linjer.get_value() * 10 ** 3))
+                                ),
+                                color=line.get_color()
+                            # ) for n in np.arange(-3, 3.1, 1)
+                            ) for n in np.arange(
+                                -np.floor(1/(wavelength * 10 ** (-9) * linjer.get_value() * 10 ** 3)),
+                                np.floor(1/(wavelength * 10 ** (-9) * linjer.get_value() * 10 ** 3)) + 0.1,
+                                1
+                            )
+                        ]
+                    ) for line, wavelength in zip(laser_lines, wavelengths)
+                ]
+            )
+            # colordots = VGroup(
+            #     *[
+            #         VGroup(
+            #             *[
+            #                 Dot(
+            #                     dline.get_end(),
+            #                     color=dline.get_color()
+            #                 ) for dline in diff_lines
+            #             ]
+            #         ) for diff_lines in difflines
+            #     ]
+            # )
+
+            # for laser, diffs, text, dots in zip(laser_lines, difflines, laser_lambdas, colordots):
+            for laser, diffs, text in zip(laser_lines, difflines, laser_lambdas):
+                self.play(
+                    Create(laser),
+                    Write(text, run_time=0.5),
+                    rate_func=rate_functions.linear,
+                    run_time=dist_lg.get_value()/(i+1)
+                )
+                self.play(
+                    *[Create(dline) for dline in diffs],
+                    rate_func=rate_functions.linear,
+                    run_time=dist_gw.get_value()/(i+1)
+                )
+                self.slide_pause()
+                # self.play(
+                #     Create(dots),
+                #     run_time=0.5
+                # )
+                # self.slide_pause()
+                self.play(
+                    # FadeOut(laser, diffs, text),
+                    FadeOut(text),
+                    laser.animate.set_opacity(0.05),
+                    diffs.animate.set_opacity(0.05),
+                    # dots.animate.set_opacity(0.1),
+                    run_time=0.25
+                )
+
+            # for laser, diffs, dots in zip(laser_lines, difflines, colordots):
+            for laser, diffs in zip(laser_lines, difflines):
+                self.play(
+                    laser.animate.set_opacity(1),
+                    diffs.animate.set_opacity(1),
+                    # dots.animate.set_opacity(1),
+                    run_time=0.5
+                )
+                self.slide_pause()
+                self.play(
+                    laser.animate.set_opacity(0.05),
+                    diffs.animate.set_opacity(0.05),
+                    # dots.animate.set_opacity(0.1),
+                    run_time=0.5
+                )
+
+            self.play(FadeOut(gitter_name), run_time=0.25)
+            # self.remove(laser_lines, difflines, colordots, gitter_name)
+            self.remove(
+                *[m for m in self.mobjects if m not in [laser_gun, laser_name, gitter_top, wall, wall_name]]
+            )
