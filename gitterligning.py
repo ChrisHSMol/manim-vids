@@ -9,6 +9,7 @@ if slides:
 
 class GitterLigning(Slide if slides else Scene):
     def construct(self):
+        self.slide_pause()
         self.udstyr()
         self.gitter_ligning()
         self.slide_pause(5)
@@ -270,7 +271,7 @@ class GitterLigning(Slide if slides else Scene):
                                 ) * UP,
                                 # stroke_width=laser_thickness * np.exp(-0.25 * np.abs(n)),
                                 stroke_width=laser_thickness * np.exp(
-                                    -2 * np.abs(np.arcsin(n * wavelength * 10 ** (-9) * linjer.get_value() * 10 ** 3))
+                                    -3 * np.abs(np.arcsin(n * wavelength * 10 ** (-9) * linjer.get_value() * 10 ** 3))
                                 ),
                                 color=line.get_color()
                             # ) for n in np.arange(-3, 3.1, 1)
