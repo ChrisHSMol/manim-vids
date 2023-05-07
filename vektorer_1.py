@@ -3,7 +3,7 @@ from helpers import *
 import numpy as np
 import math
 
-slides = False
+slides = True
 if slides:
     from manim_slides import Slide
 

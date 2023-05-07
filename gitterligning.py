@@ -9,8 +9,8 @@ if slides:
 
 class GitterLigning(Slide if slides else Scene):
     def construct(self):
-        self.slide_pause()
-        self.udstyr()
+        # self.slide_pause()
+        # self.udstyr()
         self.gitter_ligning()
         self.slide_pause(5)
 
@@ -229,6 +229,7 @@ class GitterLigning(Slide if slides else Scene):
 
         wavelengths = [400, 532, 680]
         colors = [BLUE, GREEN, RED]
+        wc = {str(w): c for w, c in zip(wavelengths, colors)}
         self.remove(gitter_name)
         for i, linjer in enumerate([200, 400, 600]):
             linjer = ValueTracker(linjer)
@@ -243,12 +244,12 @@ class GitterLigning(Slide if slides else Scene):
 
             laser_lines = VGroup(
                 *[
-                    Line(
+                    add_shine(Line(
                         start=laser_gun.get_right() + 0.25*UP,
                         end=gitter_top.get_left(),
                         stroke_width=laser_thickness,
                         color=color
-                    ) for color in colors
+                    )) for color in colors
                 ]
             )
             laser_lambdas = VGroup(
@@ -262,7 +263,7 @@ class GitterLigning(Slide if slides else Scene):
                 *[
                     VGroup(
                         *[
-                            Line(
+                            add_shine(Line(
                                 start=gitter_top.get_right(),
                                 end=wall.get_left() + dist_gw.get_value() * np.tan(
                                     np.arcsin(
@@ -273,15 +274,16 @@ class GitterLigning(Slide if slides else Scene):
                                 stroke_width=laser_thickness * np.exp(
                                     -3 * np.abs(np.arcsin(n * wavelength * 10 ** (-9) * linjer.get_value() * 10 ** 3))
                                 ),
-                                color=line.get_color()
+                                # color=line.get_color()
+                                color=wc[str(wavelength)]
                             # ) for n in np.arange(-3, 3.1, 1)
-                            ) for n in np.arange(
+                            )) for n in np.arange(
                                 -np.floor(1/(wavelength * 10 ** (-9) * linjer.get_value() * 10 ** 3)),
                                 np.floor(1/(wavelength * 10 ** (-9) * linjer.get_value() * 10 ** 3)) + 0.1,
                                 1
                             )
                         ]
-                    ) for line, wavelength in zip(laser_lines, wavelengths)
+                    ) for line, wavelength in zip(laser_lines[0], wavelengths)
                 ]
             )
             # colordots = VGroup(
@@ -300,15 +302,23 @@ class GitterLigning(Slide if slides else Scene):
             # for laser, diffs, text, dots in zip(laser_lines, difflines, laser_lambdas, colordots):
             for laser, diffs, text in zip(laser_lines, difflines, laser_lambdas):
                 self.play(
-                    Create(laser),
+                    *[Create(l) for l in laser],
                     Write(text, run_time=0.5),
                     rate_func=rate_functions.linear,
                     run_time=dist_lg.get_value()/(i+1)
                 )
                 self.play(
-                    *[Create(dline) for dline in diffs],
-                    rate_func=rate_functions.linear,
-                    run_time=dist_gw.get_value()/(i+1)
+                    *[AnimationGroup(
+                        *[
+                            Create(
+                                d,
+                                rate_func=rate_functions.linear,
+                                run_time=dist_gw.get_value()/(i+1)
+                            ) for d in dline
+                        ]
+                    ) for dline in diffs],
+                    # rate_func=rate_functions.linear,
+                    # run_time=dist_gw.get_value()/(i+1)
                 )
                 self.slide_pause()
                 # self.play(
@@ -316,28 +326,40 @@ class GitterLigning(Slide if slides else Scene):
                 #     run_time=0.5
                 # )
                 # self.slide_pause()
+                # self.play(
+                #     # FadeOut(laser, diffs, text),
+                #     FadeOut(text),
+                #     laser.animate.set_opacity(0.05),
+                #     diffs.animate.set_opacity(0.05),
+                #     # dots.animate.set_opacity(0.1),
+                #     run_time=0.25
+                # )
                 self.play(
-                    # FadeOut(laser, diffs, text),
-                    FadeOut(text),
-                    laser.animate.set_opacity(0.05),
-                    diffs.animate.set_opacity(0.05),
-                    # dots.animate.set_opacity(0.1),
+                    *[FadeOut(m) for m in [laser, diffs, text]],
                     run_time=0.25
                 )
 
             # for laser, diffs, dots in zip(laser_lines, difflines, colordots):
             for laser, diffs in zip(laser_lines, difflines):
+                # self.play(
+                #     laser.animate.set_opacity(1),
+                #     diffs.animate.set_opacity(1),
+                #     # dots.animate.set_opacity(1),
+                #     run_time=0.5
+                # )
                 self.play(
-                    laser.animate.set_opacity(1),
-                    diffs.animate.set_opacity(1),
-                    # dots.animate.set_opacity(1),
+                    *[FadeIn(m) for m in [laser, diffs]],
                     run_time=0.5
                 )
                 self.slide_pause()
+                # self.play(
+                #     laser.animate.set_opacity(0.05),
+                #     diffs.animate.set_opacity(0.05),
+                #     # dots.animate.set_opacity(0.1),
+                #     run_time=0.5
+                # )
                 self.play(
-                    laser.animate.set_opacity(0.05),
-                    diffs.animate.set_opacity(0.05),
-                    # dots.animate.set_opacity(0.1),
+                    *[FadeOut(m) for m in [laser, diffs]],
                     run_time=0.5
                 )
 
@@ -346,3 +368,4 @@ class GitterLigning(Slide if slides else Scene):
             self.remove(
                 *[m for m in self.mobjects if m not in [laser_gun, laser_name, gitter_top, wall, wall_name]]
             )
+

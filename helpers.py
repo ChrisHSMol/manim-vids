@@ -261,6 +261,44 @@ class DieFace(VGroup):
         self.value = value
         self.index = value
 
+
+def add_shine(mob, nlines=10, ends=False):
+    # shines = VGroup(
+    #     *[
+    #         Line(
+    #             # start=line.get_left(),
+    #             # end=line.get_right(),
+    #             start=line.get_start(),
+    #             end=line.get_end(),
+    #             stroke_width=(2 * (i + 1)) ** 2,
+    #             color=line.get_color()
+    #         ).set_opacity(np.exp(-(i + 1) ** 2)) for i in np.linspace(2, 0, nlines)
+    #     ]
+    # )
+    shines = VGroup(
+        *[
+            mob.copy().set_style(
+                stroke_width=(2 * (i + 1)) ** 2,
+                # fill_opacity=np.exp(-(i + 1) ** 2)
+            ).set_opacity(np.exp(-(i + 1) ** 2)) for i in np.linspace(2, 0, nlines)
+            # ) for i in np.linspace(2, 0, nlines)
+        ]
+    )
+    # if ends:
+    #     for ex in [line.get_start(), line.get_end()]:
+    #         shines.add(
+    #             *[
+    #                 Dot(
+    #                     ex,
+    #                     color=line.get_color(),
+    #                     radius=(0.145*(i + 1)) ** 2
+    #                 ).set_opacity(np.exp(-(i + 1) ** 2)) for i in np.linspace(2, 0, nlines)
+    #             ]
+    #         )
+    shines.add(mob)
+    return shines
+
+
 def keyword_overlay(self):
     srec = ScreenRectangle(height=10, stroke_width=0, fill_color=BLACK, fill_opacity=0.5)
     self.play(FadeIn(srec), run_time=0.5)
