@@ -1,0 +1,6 @@
+[submodule "dist"]
+    path = manim-slides
+    url = git://github.com/user/repo.git
+[submodule "manim-slides"]
+	path = manim-slides
+	url = git://github.com/chrishsmol/manim-vids/manim-slides
