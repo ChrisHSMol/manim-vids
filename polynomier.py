@@ -501,9 +501,9 @@ class MonotoniForhold(Slide if slides else Scene):
         )
         self.slide_pause()
         intervaller = VGroup(
-            MathTex(f"]-\\infty; {plane.p2c(toppunkter[0].get_center())[0]:.2f}["),
-            MathTex(f"]{plane.p2c(toppunkter[0].get_center())[0]:.2f}; {plane.p2c(toppunkter[1].get_center())[0]:.2f}["),
-            MathTex(f"]{plane.p2c(toppunkter[1].get_center())[0]:.2f}; \\infty[")
+            MathTex(f"]-\\infty; {plane.p2c(toppunkter[0].get_center())[0]:.2f}]"),
+            MathTex(f"[{plane.p2c(toppunkter[0].get_center())[0]:.2f}; {plane.p2c(toppunkter[1].get_center())[0]:.2f}]"),
+            MathTex(f"[{plane.p2c(toppunkter[1].get_center())[0]:.2f}; \\infty[")
         ).arrange(DOWN, aligned_edge=LEFT).next_to(monotonitekst, DOWN, aligned_edge=LEFT)
         irec = get_background_rect(intervaller, buff=0.1)
         self.play(FadeIn(irec))
@@ -642,4 +642,54 @@ class ParallelForskydning(Slide if slides else Scene):
                     run_time=2
                 ),
                 self.slide_pause()
+
+
+class KonstantersBetydning(Slide if slides else Scene):
+    def construct(self):
+        self.slide_pause(0.1)
+        self.betydning_af_a()
+
+        self.slide_pause(5)
+
+    def slide_pause(self, t=1.0, slides_bool=slides):
+        return slides_pause(self, t=t, slides_bool=slides_bool)
+
+    def betydning_af_a(self):
+        a_knap = DrejeKnap(accent_color=YELLOW, range_min=-5, label="a").to_edge(UL)
+        a_tracker = a_knap.tracker
+        plane = NumberPlane(
+            x_range=(-8, 8, 1),
+            y_range=(-8.5, 9.5, 2),
+            x_length=width,
+            y_length=width / 16 * 9,
+            background_line_style={
+                "stroke_color": TEAL,
+                "stroke_width": 1.5,
+                "stroke_opacity": 0.3
+            },
+        )
+        graph = always_redraw(lambda: plane.plot(
+            lambda x: a_tracker.get_value() * x**2,
+            color=BLUE,
+            stroke_width=6
+        ))
+        equation = MathTex(r"f(x)=a \cdot x^2").to_edge(LEFT).shift(0.1*UP)
+        equation[0][5].set_color(YELLOW)
+        self.play(
+            LaggedStart(
+                DrawBorderThenFill(plane),
+                Create(graph),
+                Write(a_knap),
+                Write(equation),
+                lag_ratio=0.5
+            ),
+            run_time=3
+        )
+        self.slide_pause()
+        for a in [0.05, 4, -4, -5, 0, 5, 1]:
+            self.play(
+                a_tracker.animate.set_value(a),
+                run_time=2
+            )
+
 

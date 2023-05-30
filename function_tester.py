@@ -84,3 +84,47 @@ class ShineTester(Scene):
             run_time=2
         )
         self.wait(2)
+
+
+class DrejeKnapTest(Scene):
+    def construct(self):
+        a_knap = DrejeKnap(range_min=-2, range_max=2, label="a", show_value=True, color=WHITE, accent_color=YELLOW)
+        b_knap = DrejeKnap(range_min=-3, range_max=5, label="b", show_value=True, color=WHITE, accent_color=BLUE)
+        a_tracker = a_knap.tracker
+        b_tracker = b_knap.tracker
+        a_knap.scale(1).to_edge(UL)
+        b_knap.scale(1).next_to(a_knap, DOWN)
+        self.add(a_knap, b_knap)
+
+        slider = Slider(smin=-3, smax=5, label="b", color=BLUE).scale(1).to_edge(RIGHT)
+        bb_tracker = slider.tracker
+        self.add(slider)
+
+        plane = NumberPlane(
+            x_range=[-6.5, 6.5, 1],
+            y_range=[-3.25, 3.25, 1],
+            x_length=6.5,
+            y_length=3.25,
+            background_line_style={
+                "stroke_color": TEAL,
+                "stroke_width": 1,
+                "stroke_opacity": 0.4
+            }
+        )
+        graph = always_redraw(lambda:
+            plane.plot(lambda x: a_tracker.get_value() * x + b_tracker.get_value())
+        )
+        self.add(plane, graph)
+        for i in range(10):
+            self.play(
+                a_tracker.animate.set_value(a_knap.get_max()),
+                b_tracker.animate.set_value(b_knap.get_max()),
+                bb_tracker.animate.set_value(b_knap.get_max()),
+                run_time=5
+            )
+            self.play(
+                a_tracker.animate.set_value(a_knap.get_min()),
+                b_tracker.animate.set_value(b_knap.get_min()),
+                bb_tracker.animate.set_value(b_knap.get_min())
+            )
+

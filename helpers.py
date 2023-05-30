@@ -335,3 +335,167 @@ def keyword_overlay(self):
         run_time=2
     )
 
+
+class DrejeKnap(VGroup):
+    def __init__(self,
+                 color=None,
+                 accent_color=None,
+                 range_min=0,
+                 range_max=5,
+                 range_step=1,
+                 radius=1,
+                 label=None,
+                 show_value=False
+                 ):
+
+        if color is None:
+            color = WHITE
+        if accent_color is None:
+            accent_color = WHITE
+        circ = VGroup(
+            Circle(radius=radius, color=color),
+            # Circle(radius=radius, color=WHITE),
+            Circle(radius=1.2 * radius, color=BLACK, stroke_width=0.01),
+            Circle(radius=0.45 * radius, color=BLACK, stroke_width=0.01)
+        )
+        # circ += VGroup(
+        #     *[
+        #         Dot(
+        #             circ[1].point_at_angle(-270/360 * i + 200 * DEGREES),
+        #             color=color,
+        #             radius=0.02 * (i + 1)
+        #         ) for i in np.arange(0, range_max-range_min+range_step, range_step)
+        #     ]
+        # )
+        n_points = int((range_max - range_min) / range_step + 1)
+        angle_range = 270
+        angle_step = angle_range / (n_points - 1)
+        angle_offset = 225
+        marks = VGroup(
+            *[
+                Line(
+                    start=circ[0].point_at_angle((angle_offset - angle_step * i) * DEGREES),
+                    end=circ[1].point_at_angle((angle_offset - angle_step * i) * DEGREES),
+                    color=color,
+                    # color=WHITE
+                ) for i in range(n_points)
+            ]
+        )
+        circ += marks
+        # angle_tracker = ValueTracker(range_min)
+        angle_tracker = ValueTracker(0)
+        circ += always_redraw(lambda:
+            Line(
+                start=circ[2].point_at_angle(
+                    (angle_offset - angle_step * (angle_tracker.get_value()-range_min)) * DEGREES
+                ),
+                end=circ[0].point_at_angle(
+                    (angle_offset - angle_step * (angle_tracker.get_value()-range_min)) * DEGREES
+                ),
+                color=accent_color,
+                stroke_width=6
+            )
+        )
+        circ += VGroup(
+            *[
+                MathTex(i, color=accent_color).next_to(line, d, buff=0.05) for i, line, d in zip(
+                    [range_min, range_max],
+                    [marks[0], marks[-1]],
+                    [DL, DR]
+                )
+            ]
+        )
+        if label is not None:
+            circ += MathTex(label, color=accent_color).set_color(accent_color).scale(2).move_to(circ[0])
+
+        if show_value:
+            circ += always_redraw(lambda:
+                DecimalNumber(angle_tracker.get_value(), color=accent_color).next_to(circ[0], DOWN, buff=0.1)
+            )
+
+        super().__init__(circ)
+        self.tracker = angle_tracker
+        self.color = color
+        self.accent_color = accent_color
+        self.range_min = range_min
+        self.range_max = range_max
+        self.range_step = range_step
+        self.radius = radius
+        self.label = label
+
+    def get_min(self):
+        return self.range_min
+
+    def get_max(self):
+        return self.range_max
+
+    def get_step(self):
+        return self.range_step
+
+    def get_value(self):
+        value = always_redraw(lambda:
+            DecimalNumber(self.tracker.get_value(), color=self.accent_color).next_to(self[0], DOWN, buff=0.1)
+        )
+        return value
+
+
+class Slider(VGroup):
+    def __init__(self,
+                 smin=-5,
+                 smax=5,
+                 step_size=1,
+                 color=WHITE,
+                 label=None
+                 ):
+        n_points = int((smax - smin)/step_size + 1)
+        tracker = ValueTracker(0)
+        slider = VGroup(
+            Line(
+                start=ORIGIN,
+                end=2 * UP,
+                color=WHITE,
+                stroke_width=2
+            )
+        )
+        _slider_ticks = [
+            Line(
+                start=0.05 * LEFT + i * UP,
+                end=0.05 * RIGHT + i * UP,
+                color=WHITE,
+                stroke_width=2
+            ) for i in np.linspace(0, 2, n_points)
+        ]
+        slider.add(*_slider_ticks)
+        slider.add(*[
+            DecimalNumber(
+                n,
+                num_decimal_places=0,
+                include_sign=n != 0
+            ).scale(0.35).next_to(
+                hline, LEFT, buff=0.075
+            ) for n, hline in zip(np.arange(smin, smax + 0.01, 1), slider[1:])
+        ])
+        if label is not None:
+            slider.add(
+                MathTex(label, color=color).next_to(slider[0], UP)
+            )
+
+        slider.add(always_redraw(lambda:
+            Arrow(
+               0.5 * RIGHT, 0.5 * LEFT, color=color
+            ).next_to(
+                _slider_ticks[0], RIGHT, buff=0.1
+            ).shift(
+                2*(tracker.get_value() - smin) / (smax - smin) * UP
+            )
+        ))
+        super().__init__(slider)
+        self.tracker = tracker
+        self.smin = smin
+        self.smax = smax
+        self.step = step_size
+        self.color = color
+        self.label = label
+
+
+
